@@ -13,28 +13,23 @@ const Factory = use('Factory');
 
 trait('Test/ApiClient');
 trait('DatabaseTransactions');
-/*
+
 test('Teste de envio de email com instruções', async ({ assert, client }) => {
   Mail.fake();
 
-  const data = {
-    username: 'Delfio Francisco',
-    telefone: '993014603',
-    email: 'delfio_eu@hotmail.com',
-    password: '123456',
-  };
+  const email = 'delfio_eu@hotmail.com';
 
-  const user = await User.create(data);
+  const user = await Factory.model('App/Models/User').create({ email });
 
   const response = await client
     .post('/forgot')
-    .send({ email: data.email })
+    .send({ email })
     .end();
 
   response.assertStatus(204);
 
   const recentEmail = Mail.pullRecent();
-  assert.equal(recentEmail.message.to[0].address, data.email);
+  assert.equal(recentEmail.message.to[0].address, email);
 
   const token = await user.tokens().first();
 
@@ -101,4 +96,3 @@ test('O reset não pode ser feito depois de 2 horas feito o chamado', async ({
 
   response.assertStatus(204);
 });
-*/

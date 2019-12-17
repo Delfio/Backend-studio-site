@@ -34,8 +34,6 @@ test('Autenticação de usúario', async ({ assert, client }) => {
     })
     .end();
 
-    console.log(response);
-
   response.assertStatus(200);
 
   assert.exists(response.body.token);

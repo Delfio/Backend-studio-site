@@ -18,7 +18,7 @@ Factory.blueprint('App/Models/User', (faker, i, data = {}) => {
     telefone: faker.string(),
     endereco: faker.string(),
     email: faker.email(),
-    senha: faker.string(),
+    password: faker.string(),
     ...data,
   };
 });
