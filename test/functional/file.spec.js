@@ -1,4 +1,4 @@
-const { test, trait } = use('Test/Suite')('File')
+const { test, trait } = use('Test/Suite')('File');
 
 const Helpers = use('Helpers');
 
