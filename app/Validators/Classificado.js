@@ -1,10 +1,12 @@
-class Lojas {
+class Classificado {
   get rules() {
     return {
-      nome: 'required|min:5|max:20',
+      titulo: 'required|min:5|max:200',
       descricao: 'required|min:10',
       endereco: 'required|min:5',
-      CNPJ: 'required|min:14|max:14',
+      fone_contato: 'required|min:9|max:11',
+      preco: 'required',
+      user_id: 'required|exists:users,id',
     };
   }
 
@@ -25,4 +27,4 @@ class Lojas {
   }
 }
 
-module.exports = Lojas;
+module.exports = Classificado;

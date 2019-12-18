@@ -32,6 +32,12 @@ class User extends Model {
   tokens() {
     return this.hasMany('App/Models/Token');
   }
+
+  classificados() {
+    return this.belongsToMany('App/Models/Classificado').pivotTable(
+      'user_classificados'
+    );
+  }
 }
 
 module.exports = User;

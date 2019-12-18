@@ -9,6 +9,11 @@ class FileSchema extends Schema {
       table.string('name').notNullable();
       table.string('type', 20).notNullable();
       table.string('subtype', 20).notNullable();
+      table
+        .integer('slide_fotos_id')
+        .unsigned()
+        .references('id')
+        .inTable('slide_fotos');
       table.timestamps();
     });
   }

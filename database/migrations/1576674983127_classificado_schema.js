@@ -14,22 +14,14 @@ class ClassificadoSchema extends Schema {
         .integer('user_id')
         .unsigned()
         .references('id')
-        .inTable('users');
+        .inTable('users')
+        .notNullable();
       table
-        .integer('imagem1')
+        .integer('slide')
         .unsigned()
         .references('id')
-        .inTable('files');
-      table
-        .integer('imagem2')
-        .unsigned()
-        .references('id')
-        .inTable('files');
-      table
-        .integer('imagem3')
-        .unsigned()
-        .references('id')
-        .inTable('files');
+        .inTable('slide_fotos')
+        .notNullable();
       table.timestamps();
     });
   }
