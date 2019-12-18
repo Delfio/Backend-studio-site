@@ -2,7 +2,6 @@ const Mail = use('Mail');
 
 const { test, trait } = use('Test/Suite')('Recuperação de senha');
 
-const User = use('App/Models/User');
 const Hash = use('Hash');
 const Database = use('Database');
 
