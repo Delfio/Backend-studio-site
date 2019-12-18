@@ -41,15 +41,15 @@ test('Atualização do usuario', async ({ assert, client }) => {
     .send(userCriar)
     .end();
 
-  const token = logar.body.token.token;
+  const { token } = logar.body.token;
 
- const response = await client
-  .put('users/1')
-  .send({ username: 'Delfio Francisco' })
-  .header('Authorization', `Bearer ${token}`)
-  .end();
+  const response = await client
+    .put('users/1')
+    .send({ username: 'Delfio Francisco' })
+    .header('Authorization', `Bearer ${token}`)
+    .end();
 
-  const valor = response.body.username !== username ? true : false;
+  const valor = response.body.username !== username;
 
   assert.isTrue(valor);
 });

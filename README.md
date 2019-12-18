@@ -19,3 +19,6 @@ studio.com
           - Algumas imagens
           - Descrição
 
+# OK --
+    - User
+    - Administrador

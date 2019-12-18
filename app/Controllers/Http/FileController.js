@@ -9,11 +9,8 @@ const Helpers = use('Helpers');
  * Resourceful controller for interacting with files
  */
 class FileController {
-
   async store({ request, response }) {
-
     try {
-
       if (!request.file('file')) return;
 
       const upload = request.file('file', { size: '2mb' });
@@ -21,7 +18,7 @@ class FileController {
       const fileName = `${Date.now()}.${upload.subtype}`;
 
       await upload.move(Helpers.tmpPath('uploads'), {
-        name: fileName
+        name: fileName,
       });
 
       if (!upload.moved()) {
@@ -36,13 +33,10 @@ class FileController {
       });
 
       return file;
-
-    } catch(err) {
-      return response.status(err.status).json({ error: "não foi possivel" })
+    } catch (err) {
+      return response.status(err.status).json({ error: 'não foi possivel' });
     }
-
   }
-
 }
 
 module.exports = FileController;

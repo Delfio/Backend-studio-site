@@ -18,15 +18,14 @@ class UserController {
       const user = await User.findByOrFail('id', params.id);
 
       user.merge(data);
-  
+
       await user.save();
 
       return user;
-
     } catch (err) {
-      return response
-      .status(err.status)
-      .send({ error: { message: 'Não foi possivel completar sua operação' } });
+      return response.status(err.status).send({
+        error: { message: 'Não foi possivel completar sua operação' },
+      });
     }
   }
 }
