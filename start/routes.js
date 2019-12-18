@@ -8,3 +8,4 @@ Route.put('users/:id', 'UserController.update').middleware('auth'); // Criar Use
 Route.post('forgot', 'ForgotPasswordController.store'); // Email para recuperaçaõ de senha
 Route.post('reset', 'ResetPasswordController.store'); // Mudar a senha
 
+Route.post('file', 'FileController.store').middleware('auth');
