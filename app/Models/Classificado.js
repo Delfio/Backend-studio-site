@@ -8,7 +8,7 @@ class Classificado extends Model {
   }
 
   imagens() {
-    // Um classificado tem um slide
+    // Um classificado tem varias fotos
     return this.hasMany('App/Models/ImageClassificado');
   }
 }

@@ -4,7 +4,7 @@ studio.com
      - Classificados Grátis
          - Usuário vai poder cadastrar produtos
          - Fotos do produto, preço status e tudo mais
-         - Sistema de pagar para ter destaque
+         - Sistema de pagar para ter destaque ****
 
      - Tudo aqui empresas
          - Perfil de empresas - porém elas não se cadastram
@@ -12,7 +12,7 @@ studio.com
          - Fotos, descrições e até vídeos
 
      - Festas e Eventos
-         - Usuário(definir ainda) vai cadastrar os eventos e ultimas festas, recentes
+         - Administrador vai cadastrar os eventos e ultimas festas, recentes
          
      - Noticias e Colunas
           - Administrador pode fazer Cadastro de noticias,
