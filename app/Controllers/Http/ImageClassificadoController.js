@@ -40,7 +40,7 @@ class ImageClassificadoController {
 
       const fileName = `${Date.now()}.${upload.subtype}`;
 
-      await upload.move(Helpers.tmpPath('uploads'), {
+      await upload.move(Helpers.tmpPath('uploads/classificados'), {
         name: fileName,
       });
 
@@ -69,7 +69,7 @@ class ImageClassificadoController {
 
     if (!file) return;
 
-    return response.download(Helpers.tmpPath(`uploads/${file.file}`));
+    return response.download(Helpers.tmpPath(`uploads/classificados/${file.file}`));
   }
 }
 

@@ -12,10 +12,10 @@ class ImageClassificadoSchema extends Schema {
       table.string('type', 20).notNullable();
       table.string('subtype', 20).notNullable();
       table
-        .integer('classificado_id')
+        .integer('user_id')
         .unsigned()
         .references('id')
-        .inTable('classificados');
+        .inTable('users');
       table.timestamps();
 
     })

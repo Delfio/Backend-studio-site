@@ -21,11 +21,17 @@ Route.group(() => {
   Route.delete('classificados/:id', 'ClassificadoController.destroy'); // Show classificados
 }).middleware('auth');
 
+/* Imagem dos classificados */
 Route.group(() => {
-  Route.resource('classificados.imagem', 'ImageClassificadoController').apiOnly();
+  Route.resource('classificados.imagem', 'ImageClassificadoController').apiOnly();// todos os metodos
 }).middleware(['auth'])
 
-
+/* Admin */
 Route.group(() => {
   Route.post('admin', 'AdministradorController.store');
 }).middleware(['auth']);
+
+/* Eventos */
+Route.group(() => {
+  Route.post('eventos', 'EventoController.store');
+}).middleware('auth');

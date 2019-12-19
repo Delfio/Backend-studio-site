@@ -1,5 +1,11 @@
 'use strict'
 
+/** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
+const User = use('App/Models/User');
+
+/** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
+const Evento = use('App/Models/Evento');
+
 /** @typedef {import('@adonisjs/framework/src/Request')} Request */
 /** @typedef {import('@adonisjs/framework/src/Response')} Response */
 /** @typedef {import('@adonisjs/framework/src/View')} View */
@@ -17,77 +23,34 @@ class EventoController {
    * @param {Response} ctx.response
    * @param {View} ctx.view
    */
-  async index ({ request, response, view }) {
-  }
 
-  /**
-   * Render a form to be used for creating a new evento.
-   * GET eventos/create
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async create ({ request, response, view }) {
-  }
+   async store({ request, auth, response }){
+    
+    /* Verificar se o usuario logado é adm */
+    try{
+      const data = request.only([
+        'titulo',
+        'descricao',
+        'phone_contato',
+        'email_contato',
+        'responsavel',
+      ]);
 
-  /**
-   * Create/save a new evento.
-   * POST eventos
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   */
-  async store ({ request, response }) {
-  }
+      const userAdmin = await User.find(auth.user.id);
 
-  /**
-   * Display a single evento.
-   * GET eventos/:id
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async show ({ params, request, response, view }) {
-  }
+      if(!userAdmin){
+        return response.status(401).json({error: 'Não autorizado'})
+      }
 
-  /**
-   * Render a form to update an existing evento.
-   * GET eventos/:id/edit
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async edit ({ params, request, response, view }) {
-  }
+      const evento = await Evento.create(data);
 
-  /**
-   * Update evento details.
-   * PUT or PATCH eventos/:id
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   */
-  async update ({ params, request, response }) {
-  }
+      return evento;
 
-  /**
-   * Delete a evento with id.
-   * DELETE eventos/:id
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   */
-  async destroy ({ params, request, response }) {
-  }
+    }catch(err){
+      response.status(500).json({error: 'error'});
+    }
+   }
+
 }
 
 module.exports = EventoController
