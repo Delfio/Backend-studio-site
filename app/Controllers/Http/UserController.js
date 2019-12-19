@@ -3,9 +3,12 @@ const User = use('App/Models/User');
 
 class UserController {
   async store({ request }) {
-    const data = request.all();
+    const data = request.only(['username', 'phone', 'email', 'password']);
 
-    const user = await User.create(data);
+    const user = await User.create({
+      ...data,
+      ADM: false,
+    });
 
     // const token = await auth.attempt(email, password)
 

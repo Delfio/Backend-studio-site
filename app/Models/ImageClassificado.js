@@ -5,11 +5,11 @@ const Model = use('Model');
 const Env = use('Env');
 
 class ImageClassificado extends Model {
-  static get computed () {
-    return ['url'] // Url - campo statico ficticio
-  };
+  static get computed() {
+    return ['url']; // Url - campo statico ficticio
+  }
 
-  getUrl ({ id }) {
+  getUrl({ id }) {
     return `${Env.get('APP_URL')}/imgCadastros/${id}`;
   }
 }

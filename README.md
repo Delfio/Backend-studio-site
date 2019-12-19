@@ -21,4 +21,4 @@ studio.com
 
 # OK --
     - User
-    - Administrador
+    - Classificados (IMPLEMENTAR FUNCIONALIDADE DE APROVAÇÃO E DESTAQUE)

@@ -24,3 +24,8 @@ Route.group(() => {
 Route.group(() => {
   Route.resource('classificados.imagem', 'ImageClassificadoController').apiOnly();
 }).middleware(['auth'])
+
+
+Route.group(() => {
+  Route.post('admin', 'AdministradorController.store');
+}).middleware(['auth']);
