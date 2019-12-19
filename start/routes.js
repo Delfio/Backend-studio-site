@@ -8,6 +8,7 @@ Route.put('users/:id', 'UserController.update').middleware('auth'); // Update de
 Route.post('forgot', 'ForgotPasswordController.store'); // Email para recuperaçaõ de senha
 Route.post('reset', 'ResetPasswordController.store'); // Mudar a senha
 
+/* Classificados */
 Route.group(() => {
   Route.post('file', 'ImageClassificadoController.store'); // Enviar imagens
   Route.post('classificados', 'ClassificadoController.store'); // Cadastrar classificado

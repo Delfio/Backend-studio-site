@@ -13,31 +13,30 @@ const Helpers = use('Helpers');
 class ImageClassificadoController {
   async store({ request, response }) {
     try {
-      if (!request.file('file')) return;
+      if(!request.file('file')) return;
 
       const upload = request.file('file', { size: '2mb' });
 
       const fileName = `${Date.now()}.${upload.subtype}`;
 
       await upload.move(Helpers.tmpPath('uploads'), {
-        name: fileName,
+        name: fileName
       });
 
-      if (!upload.moved()) {
-        throw upload.error();
+      if(!upload.moved()){
+        throw upload.error()
       }
 
       const file = await ImageClassificado.create({
         file: fileName,
         name: upload.clientName,
         type: upload.type,
-        subtype: upload.subtype,
-        classificados_id: null,
+        subtype: upload.subtype
       });
 
       return file;
-    } catch (err) {
-      return response.status(err.status).json({ error: 'não foi possivel' });
+    }catch(err){
+      return response.error();
     }
   }
 }
