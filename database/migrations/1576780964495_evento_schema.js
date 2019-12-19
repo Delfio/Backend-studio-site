@@ -1,11 +1,9 @@
-'use strict'
-
 /** @type {import('@adonisjs/lucid/src/Schema')} */
-const Schema = use('Schema')
+const Schema = use('Schema');
 
 class EventoSchema extends Schema {
-  up () {
-    this.create('eventos', (table) => {
+  up() {
+    this.create('eventos', table => {
       table.increments();
       table.string('titulo', 200).notNullable();
       table.text('descricao').notNullable();
@@ -18,10 +16,10 @@ class EventoSchema extends Schema {
         .references('id')
         .inTable('users');
       table.timestamps();
-    })
+    });
   }
 
-  down () {
+  down() {
     this.drop('eventos');
   }
 }

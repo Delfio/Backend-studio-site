@@ -1,11 +1,9 @@
-'use strict'
-
 /** @type {import('@adonisjs/lucid/src/Schema')} */
-const Schema = use('Schema')
+const Schema = use('Schema');
 
 class ImageClassificadoSchema extends Schema {
-  up () {
-    this.create('image_classificados', (table) => {
+  up() {
+    this.create('image_classificados', table => {
       table.increments();
       table.string('file').notNullable();
       table.string('name').notNullable();
@@ -17,12 +15,11 @@ class ImageClassificadoSchema extends Schema {
         .references('id')
         .inTable('classificados');
       table.timestamps();
-
-    })
+    });
   }
 
-  down () {
-    this.drop('image_classificados')
+  down() {
+    this.drop('image_classificados');
   }
 }
 

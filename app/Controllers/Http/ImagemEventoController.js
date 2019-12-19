@@ -1,5 +1,3 @@
-'use strict'
-
 /** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
 const User = use('App/Models/User');
 
@@ -29,16 +27,14 @@ class ImagemEventoController {
    * @param {View} ctx.view
    */
   async store({ request, response, params, auth }) {
-    
-    try{
-
+    try {
       /* Verificação */
       const userAdmin = await User.find(auth.user.id);
 
       const eventoExists = await Evento.find(params.eventos_id);
 
-      if(!userAdmin && !eventoExists){
-        return response.status(401).json({error: 'Não autorizado'})
+      if (!userAdmin && !eventoExists) {
+        return response.status(401).json({ error: 'Não autorizado' });
       }
 
       /* Cadastro da imagem no banco e mover ela pra pasta */
@@ -61,26 +57,22 @@ class ImagemEventoController {
         name: upload.clientName,
         type: upload.type,
         subtype: upload.subtype,
-        evento_id: params.eventos_id
+        evento_id: params.eventos_id,
       });
-      
 
       return file;
-      
-    }catch(err){
-      console.log(err);
-      return response.status(500).json({error: 'error'});
+    } catch (err) {
+      return response.status(500).json({ error: 'error' });
     }
   }
 
-  async show({ params, response }){
+  async show({ params, response }) {
     const file = await ImagemEvento.find(params.id);
 
     if (!file) return;
 
     return response.download(Helpers.tmpPath(`uploads/eventos/${file.file}`));
   }
-
 }
 
-module.exports = ImagemEventoController
+module.exports = ImagemEventoController;

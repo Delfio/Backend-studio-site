@@ -69,7 +69,9 @@ class ImageClassificadoController {
 
     if (!file) return;
 
-    return response.download(Helpers.tmpPath(`uploads/classificados/${file.file}`));
+    return response.download(
+      Helpers.tmpPath(`uploads/classificados/${file.file}`)
+    );
   }
 }
 

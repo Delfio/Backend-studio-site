@@ -1,5 +1,3 @@
-'use strict'
-
 /** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
 const User = use('App/Models/User');
 
@@ -24,7 +22,7 @@ class EventoController {
    * @param {View} ctx.view
    */
 
-  async index(){
+  async index() {
     const eventos = Evento.query()
       .with('user')
       .with('imagens')
@@ -33,10 +31,9 @@ class EventoController {
     return eventos;
   }
 
-  async store({ request, auth, response }){
-    
+  async store({ request, auth, response }) {
     /* Verificar se o usuario logado é adm */
-    try{
+    try {
       const data = request.only([
         'titulo',
         'descricao',
@@ -47,8 +44,8 @@ class EventoController {
 
       const userAdmin = await User.find(auth.user.id);
 
-      if(!userAdmin){
-        return response.status(401).json({error: 'Não autorizado'})
+      if (!userAdmin) {
+        return response.status(401).json({ error: 'Não autorizado' });
       }
 
       const evento = await Evento.create({
@@ -57,14 +54,10 @@ class EventoController {
       });
 
       return evento;
-
-    }catch(err){
-      response.status(500).json({error: 'error'});
-
-      console.log(err);
+    } catch (err) {
+      return response.status(500).json({ error: 'error' });
     }
   }
-
 }
 
-module.exports = EventoController
+module.exports = EventoController;
