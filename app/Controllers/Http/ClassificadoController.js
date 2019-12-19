@@ -14,6 +14,7 @@ class ClassificadoController {
   async index() {
     const classificados = Classificado.query()
       .with('user')
+      .with('imagens')
       .fetch();
 
     return classificados;
