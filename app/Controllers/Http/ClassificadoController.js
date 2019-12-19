@@ -4,6 +4,9 @@
 
 /** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
 const Classificado = use('App/Models/Classificado');
+
+/** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
+const User = use('App/Models/User');
 /**
  * Resourceful controller for interacting with classificados
  */
@@ -44,8 +47,10 @@ class ClassificadoController {
     try {
       const classificado = await Classificado.find(params);
 
-      console.log(classificado);
-      if (classificado.user_id !== auth.user.id) {
+      const dono = await User.find(auth.user.id);
+
+      console.log(dono);
+      if (classificado.user_id !== auth.user.id && !dono.ADM) {
         return response.status(401).json({ error: 'não autorizado' });
       }
 
@@ -58,6 +63,23 @@ class ClassificadoController {
       return response.status(err.status).send({
         error: { message: 'Não foi possivel completar sua operação' },
       });
+    }
+  }
+
+  async destroy({ params, response, auth }) {
+    try {
+      const classificado = await Classificado.find(params.id);
+
+      const dono = await User.find(auth.user.id);
+
+      if (classificado.user_id !== auth.user.id && !dono.ADM) {
+        return response.status(401).json({ error: 'não autorizado' });
+      }
+      await classificado.delete();
+    } catch (err) {
+      return response
+        .status(err.status)
+        .json({ error: 'não foi possivel completar sua operação' });
     }
   }
 }

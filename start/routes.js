@@ -14,4 +14,5 @@ Route.group(() => {
   Route.get('classificados', 'ClassificadoController.index'); // Listar classificados
   Route.put('classificados/:id', 'ClassificadoController.update'); // Atualizar classificados
   Route.get('classificados/:id', 'ClassificadoController.show'); // Show classificados
+  Route.delete('classificados/:id', 'ClassificadoController.destroy'); // Show classificados
 }).middleware('auth');
