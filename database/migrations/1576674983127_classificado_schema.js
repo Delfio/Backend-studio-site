@@ -16,12 +16,6 @@ class ClassificadoSchema extends Schema {
         .references('id')
         .inTable('users')
         .notNullable();
-      table
-        .integer('slide')
-        .unsigned()
-        .references('id')
-        .inTable('slide_fotos')
-        .notNullable();
       table.timestamps();
     });
   }

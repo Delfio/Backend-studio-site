@@ -7,9 +7,9 @@ class Classificado extends Model {
     return this.belongsTo('App/Models/User');
   }
 
-  sliders() {
+  imagens() {
     // Um classificado tem um slide
-    return this.manyThrough('App/Models/SlideFoto', 'fotos');
+    return this.hasMany('App/Models/ImageClassificado');
   }
 }
 

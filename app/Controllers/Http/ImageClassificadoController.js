@@ -2,13 +2,15 @@
 /** @typedef {import('@adonisjs/framework/src/Response')} Response */
 /** @typedef {import('@adonisjs/framework/src/View')} View */
 
-const File = use('App/Models/File');
+/** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
+const ImageClassificado = use('App/Models/ImageClassificado');
+
 const Helpers = use('Helpers');
 
 /**
  * Resourceful controller for interacting with files
  */
-class FileController {
+class ImageClassificadoController {
   async store({ request, response }) {
     try {
       if (!request.file('file')) return;
@@ -25,11 +27,12 @@ class FileController {
         throw upload.error();
       }
 
-      const file = await File.create({
+      const file = await ImageClassificado.create({
         file: fileName,
         name: upload.clientName,
         type: upload.type,
         subtype: upload.subtype,
+        classificados_id: null,
       });
 
       return file;
@@ -39,4 +42,4 @@ class FileController {
   }
 }
 
-module.exports = FileController;
+module.exports = ImageClassificadoController;
