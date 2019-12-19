@@ -49,7 +49,6 @@ class ClassificadoController {
 
       const dono = await User.find(auth.user.id);
 
-      console.log(dono);
       if (classificado.user_id !== auth.user.id && !dono.ADM) {
         return response.status(401).json({ error: 'não autorizado' });
       }

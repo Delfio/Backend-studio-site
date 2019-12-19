@@ -10,13 +10,17 @@ Route.post('reset', 'ResetPasswordController.store'); // Mudar a senha
 
 /* Classificados */
 
-Route.get('files/:id', 'ImageClassificadoController.show'); // Ver imagem sem estar logado;
+Route.get('imgCadastros/:id', 'ImageClassificadoController.show'); // Ver imagem sem estar logado;
 
 Route.group(() => {
-  Route.post('file', 'ImageClassificadoController.store'); // Enviar imagens
+  //Route.post('imgCadastros', 'ImageClassificadoController.store'); // Enviar imagens
   Route.post('classificados', 'ClassificadoController.store'); // Cadastrar classificado
   Route.get('classificados', 'ClassificadoController.index'); // Listar classificados
   Route.put('classificados/:id', 'ClassificadoController.update'); // Atualizar classificados
   Route.get('classificados/:id', 'ClassificadoController.show'); // Show classificados
   Route.delete('classificados/:id', 'ClassificadoController.destroy'); // Show classificados
 }).middleware('auth');
+
+Route.group(() => {
+  Route.resource('classificados.imagem', 'ImageClassificadoController').apiOnly();
+}).middleware(['auth'])

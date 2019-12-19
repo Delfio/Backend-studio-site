@@ -5,6 +5,12 @@
 /** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
 const ImageClassificado = use('App/Models/ImageClassificado');
 
+/** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
+const Classificado = use('App/Models/Classificado');
+
+/** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
+const User = use('App/Models/User');
+
 const Helpers = use('Helpers');
 
 /** @type {import('@adonisjs/framework/src/Env')} */
@@ -14,11 +20,22 @@ const Env = use('Env');
  * Resourceful controller for interacting with files
  */
 class ImageClassificadoController {
-  async store({ request, response }) {
+  async store({ request, response, params, auth }) {
     try {
-      if(!request.file('file')) return;
 
-      const upload = request.file('file', { size: '2mb' });
+      /* Verificando se existe esse classificado */
+      const classificadoExists = await Classificado.find(params.classificados_id);
+
+      const userLogado = await User.find(auth.user.id);
+
+      if((!classificadoExists && classificadoExists.user_id !== auth.user.id) || (!userLogado.ADM && !classificadoExists)){
+        return response.status(404).json({error: 'error'})
+      }
+
+      /* Cadastro da imagem no banco e mover ela pra pasta */
+      if(!request.file('imagens_cadastro')) return;
+
+      const upload = request.file('imagens_cadastro', { size: '2mb' });
 
       const fileName = `${Date.now()}.${upload.subtype}`;
 
@@ -35,12 +52,13 @@ class ImageClassificadoController {
         name: upload.clientName,
         type: upload.type,
         subtype: upload.subtype,
+        classificado_id: params.classificados_id,
       });
 
       return file;
 
     }catch(err){
-      return response.status(500);
+      return response.status(404).json({error: 'Não foi possivel completar sua operação'});
     }
   }
 
