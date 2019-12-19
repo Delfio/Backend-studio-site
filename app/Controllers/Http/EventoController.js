@@ -24,7 +24,16 @@ class EventoController {
    * @param {View} ctx.view
    */
 
-   async store({ request, auth, response }){
+  async index(){
+    const eventos = Evento.query()
+      .with('user')
+      .with('imagens')
+      .fetch();
+
+    return eventos;
+  }
+
+  async store({ request, auth, response }){
     
     /* Verificar se o usuario logado é adm */
     try{
@@ -42,14 +51,19 @@ class EventoController {
         return response.status(401).json({error: 'Não autorizado'})
       }
 
-      const evento = await Evento.create(data);
+      const evento = await Evento.create({
+        ...data,
+        user_id: auth.user.id,
+      });
 
       return evento;
 
     }catch(err){
       response.status(500).json({error: 'error'});
+
+      console.log(err);
     }
-   }
+  }
 
 }
 

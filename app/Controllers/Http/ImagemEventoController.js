@@ -1,8 +1,19 @@
 'use strict'
 
+/** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
+const User = use('App/Models/User');
+
+/** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
+const Evento = use('App/Models/Evento');
+
+/** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
+const ImagemEvento = use('App/Models/ImagemEvento');
+
 /** @typedef {import('@adonisjs/framework/src/Request')} Request */
 /** @typedef {import('@adonisjs/framework/src/Response')} Response */
 /** @typedef {import('@adonisjs/framework/src/View')} View */
+
+const Helpers = use('Helpers');
 
 /**
  * Resourceful controller for interacting with imagemeventos
@@ -17,77 +28,59 @@ class ImagemEventoController {
    * @param {Response} ctx.response
    * @param {View} ctx.view
    */
-  async index ({ request, response, view }) {
+  async store({ request, response, params, auth }) {
+    
+    try{
+
+      /* Verificação */
+      const userAdmin = await User.find(auth.user.id);
+
+      const eventoExists = await Evento.find(params.eventos_id);
+
+      if(!userAdmin && !eventoExists){
+        return response.status(401).json({error: 'Não autorizado'})
+      }
+
+      /* Cadastro da imagem no banco e mover ela pra pasta */
+      if (!request.file('imagem_evento')) return;
+
+      const upload = request.file('imagem_evento', { size: '2mb' });
+
+      const fileName = `${Date.now()}.${upload.subtype}`;
+
+      await upload.move(Helpers.tmpPath('uploads/eventos'), {
+        name: fileName,
+      });
+
+      if (!upload.moved()) {
+        throw upload.error();
+      }
+
+      const file = await ImagemEvento.create({
+        file: fileName,
+        name: upload.clientName,
+        type: upload.type,
+        subtype: upload.subtype,
+        evento_id: params.eventos_id
+      });
+      
+
+      return file;
+      
+    }catch(err){
+      console.log(err);
+      return response.status(500).json({error: 'error'});
+    }
   }
 
-  /**
-   * Render a form to be used for creating a new imagemevento.
-   * GET imagemeventos/create
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async create ({ request, response, view }) {
+  async show({ params, response }){
+    const file = await ImagemEvento.find(params.id);
+
+    if (!file) return;
+
+    return response.download(Helpers.tmpPath(`uploads/eventos/${file.file}`));
   }
 
-  /**
-   * Create/save a new imagemevento.
-   * POST imagemeventos
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   */
-  async store ({ request, response }) {
-  }
-
-  /**
-   * Display a single imagemevento.
-   * GET imagemeventos/:id
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async show ({ params, request, response, view }) {
-  }
-
-  /**
-   * Render a form to update an existing imagemevento.
-   * GET imagemeventos/:id/edit
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async edit ({ params, request, response, view }) {
-  }
-
-  /**
-   * Update imagemevento details.
-   * PUT or PATCH imagemeventos/:id
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   */
-  async update ({ params, request, response }) {
-  }
-
-  /**
-   * Delete a imagemevento with id.
-   * DELETE imagemeventos/:id
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   */
-  async destroy ({ params, request, response }) {
-  }
 }
 
 module.exports = ImagemEventoController

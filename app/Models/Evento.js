@@ -2,8 +2,13 @@
 const Model = use('Model')
 
 class Evento extends Model {
+  user() {
+    // Um evento tem um criador
+    return this.belongsTo('App/Models/User');
+  }
+
   imagens() {
-    // Um classificado tem varias fotos
+    // Um evento tem varias fotos
     return this.hasMany('App/Models/ImagemEvento');
   }
 }

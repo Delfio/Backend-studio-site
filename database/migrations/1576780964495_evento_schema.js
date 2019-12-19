@@ -12,6 +12,11 @@ class EventoSchema extends Schema {
       table.string('phone_contato', 11).defaultTo('Null');
       table.string('email_contato', 11).defaultTo('Null');
       table.string('responsavel', 120).defaultTo('Null');
+      table
+        .integer('user_id')
+        .unsigned()
+        .references('id')
+        .inTable('users');
       table.timestamps();
     })
   }

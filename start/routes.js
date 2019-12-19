@@ -23,6 +23,7 @@ Route.group(() => {
 
 /* Imagem dos classificados */
 Route.group(() => {
+  // A imagem só pode ser cadastrada se o classificado estiver também
   Route.resource('classificados.imagem', 'ImageClassificadoController').apiOnly();// todos os metodos
 }).middleware(['auth'])
 
@@ -32,6 +33,17 @@ Route.group(() => {
 }).middleware(['auth']);
 
 /* Eventos */
+
+Route.get('eventos', 'EventoController.index');
+
 Route.group(() => {
   Route.post('eventos', 'EventoController.store');
 }).middleware('auth');
+
+Route.get('imgEvento/:id', 'ImagemEventoController.show'); // Ver imagem sem estar logado;
+
+/* Imagem do evento */
+Route.group(() => {
+  // A imagem só pode ser cadastrada se o evento estiver também
+  Route.resource('eventos.imagem', 'ImagemEventoController').apiOnly();// todos os metodos
+}).middleware(['auth']);
