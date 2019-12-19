@@ -7,6 +7,9 @@ const ImageClassificado = use('App/Models/ImageClassificado');
 
 const Helpers = use('Helpers');
 
+/** @type {import('@adonisjs/framework/src/Env')} */
+const Env = use('Env');
+
 /**
  * Resourceful controller for interacting with files
  */
@@ -24,20 +27,29 @@ class ImageClassificadoController {
       });
 
       if(!upload.moved()){
-        throw upload.error()
+        throw upload.error();
       }
 
       const file = await ImageClassificado.create({
         file: fileName,
         name: upload.clientName,
         type: upload.type,
-        subtype: upload.subtype
+        subtype: upload.subtype,
       });
 
       return file;
+
     }catch(err){
-      return response.error();
+      return response.status(500);
     }
+  }
+
+  async show ({ params, response }){
+    const file = await ImageClassificado.find(params.id);
+
+    if (!file) return;
+
+    return response.download(Helpers.tmpPath(`uploads/${file.file}`));
   }
 }
 

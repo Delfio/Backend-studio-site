@@ -9,6 +9,9 @@ Route.post('forgot', 'ForgotPasswordController.store'); // Email para recuperaç
 Route.post('reset', 'ResetPasswordController.store'); // Mudar a senha
 
 /* Classificados */
+
+Route.get('files/:id', 'ImageClassificadoController.show'); // Ver imagem sem estar logado;
+
 Route.group(() => {
   Route.post('file', 'ImageClassificadoController.store'); // Enviar imagens
   Route.post('classificados', 'ClassificadoController.store'); // Cadastrar classificado
