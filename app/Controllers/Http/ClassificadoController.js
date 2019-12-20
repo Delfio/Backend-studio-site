@@ -16,6 +16,7 @@ class ClassificadoController {
       .with('user')
       .with('imagens')
       .fetch();
+    // .with('videos')
 
     return classificados;
   }
@@ -36,6 +37,7 @@ class ClassificadoController {
 
     await classificado.load('user');
     await classificado.load('imagens');
+    // await classificado.load('videos');
 
     if (!classificado) return;
 

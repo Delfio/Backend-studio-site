@@ -11,6 +11,11 @@ class Classificado extends Model {
     // Um classificado tem varias fotos
     return this.hasMany('App/Models/ImageClassificado');
   }
+
+  videos() {
+    // Um classificado tem vários vídeos
+    return this.hasMany('App/Models/VideoClassificado');
+  }
 }
 
 module.exports = Classificado;
