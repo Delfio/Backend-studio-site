@@ -22,3 +22,4 @@ studio.com
 # OK --
     - User
     - Classificados (IMPLEMENTAR FUNCIONALIDADE DE APROVAÇÃO E DESTAQUE)
+    - Eventos

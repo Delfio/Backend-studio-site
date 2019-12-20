@@ -12,12 +12,14 @@ Route.post('reset', 'ResetPasswordController.store'); // Mudar a senha
 
 Route.get('imgCadastros/:id', 'ImageClassificadoController.show'); // Ver imagem sem estar logado;
 
+Route.get('classificados', 'ClassificadoController.index'); // Listar classificados
+
+Route.get('classificados/:id', 'ClassificadoController.show'); // Show classificados
+
 Route.group(() => {
   // Route.post('imgCadastros', 'ImageClassificadoController.store'); // Enviar imagens
   Route.post('classificados', 'ClassificadoController.store'); // Cadastrar classificado
-  Route.get('classificados', 'ClassificadoController.index'); // Listar classificados
   Route.put('classificados/:id', 'ClassificadoController.update'); // Atualizar classificados
-  Route.get('classificados/:id', 'ClassificadoController.show'); // Show classificados
   Route.delete('classificados/:id', 'ClassificadoController.destroy'); // Show classificados
 }).middleware('auth');
 
@@ -38,6 +40,7 @@ Route.group(() => {
 /* Eventos */
 
 Route.get('eventos', 'EventoController.index');
+Route.get('eventos/:id', 'EventoController.show');
 
 Route.group(() => {
   Route.post('eventos', 'EventoController.store');

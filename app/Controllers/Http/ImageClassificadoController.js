@@ -36,7 +36,10 @@ class ImageClassificadoController {
       /* Cadastro da imagem no banco e mover ela pra pasta */
       if (!request.file('imagens_cadastro')) return;
 
-      const upload = request.file('imagens_cadastro', { size: '2mb' });
+      const upload = request.file('imagens_cadastro', {
+        size: '2mb',
+        extnames: ['png', 'jpeg', 'jpg'],
+      });
 
       const fileName = `${Date.now()}.${upload.subtype}`;
 

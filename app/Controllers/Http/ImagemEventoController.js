@@ -40,7 +40,10 @@ class ImagemEventoController {
       /* Cadastro da imagem no banco e mover ela pra pasta */
       if (!request.file('imagem_evento')) return;
 
-      const upload = request.file('imagem_evento', { size: '2mb' });
+      const upload = request.file('imagem_evento', {
+        size: '2mb',
+        extnames: ['png', 'jpeg', 'jpg'],
+      });
 
       const fileName = `${Date.now()}.${upload.subtype}`;
 

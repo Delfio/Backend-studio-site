@@ -11,6 +11,11 @@ class Evento extends Model {
     // Um evento tem varias fotos
     return this.hasMany('App/Models/ImagemEvento');
   }
+
+  videos() {
+    // Um evento tem vários vídeos
+    return this.hasMany('App/Models/VideoEvento');
+  }
 }
 
 module.exports = Evento;

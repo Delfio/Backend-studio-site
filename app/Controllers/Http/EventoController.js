@@ -22,11 +22,28 @@ class EventoController {
    * @param {View} ctx.view
    */
 
+  async show({ params, response }) {
+    try {
+      const evento = await Evento.findByOrFail('id', params.id);
+
+      await evento.load('user');
+      await evento.load('imagens');
+      // await evento.load('videos'); implementar depois do migration
+
+      if (!evento) return;
+
+      return evento;
+    } catch (err) {
+      return response.status(500).json({ error: 'Error' });
+    }
+  }
+
   async index() {
     const eventos = Evento.query()
       .with('user')
       .with('imagens')
       .fetch();
+    // .with('videos') implementar depois do migrations
 
     return eventos;
   }
