@@ -57,6 +57,28 @@ class VideoClassificadoController {
       return response.status(500).json({ error: 'Error' });
     }
   }
+
+  async delete({ auth, params, response }) {
+    try {
+
+      /* Verificação */
+      const userLogado = await User.find(auth.params.id);
+
+      const classificado = await Classificado.find(params.classificado_id);
+
+      if(!userLogado.ADM ||classificado.user_id !== auth.user.id){
+        return response.status(401).json({error: 'Não autorizado'})
+      }
+
+      const video = await VideoClassificado.find(params.video);
+
+      video.delete();
+      
+      return;
+  } catch (err) {
+    return response.status(500).json({ error: 'Error' });
+  }
+  }
 }
 
 module.exports = VideoClassificadoController;

@@ -25,7 +25,6 @@ class VideoEventoController {
    * @param {View} ctx.view
    */
 
-
   async store({ request, auth, response, params }) {
     try {
       /* Verificação */
@@ -50,27 +49,26 @@ class VideoEventoController {
     }
   }
 
-  async destoy({ auth, request, params, response }){
+  async destoy({ auth, request, params, response }) {
     try {
-      /* Verificação */
-      const video = request.only(['idVideo']);
+        /* Verificação */
+        const userLogado = await User.find(auth.params.id);
 
-      const userAdmin = await User.find(auth.user.id);
+        const evento = await Evento.find(params.evento_id);
+  
+        if(!userLogado.ADM ||evento.user_id !== auth.user.id){
+          return response.status(401).json({error: 'Não autorizado'})
+        }
+  
+        const video = await VideoEvento.find(params.video);
+  
+        video.delete();
+        
+        return;
 
-      const eventoExists = await Evento.find(params.eventos_id);
-
-      const videoExists = await VideoEvento.find(video);
-
-      if (!userAdmin && !eventoExists && !videoExists) {
-        return response.status(401).json({ error: 'Não autorizado' });
-      }
-    
-    const videoDeletado = await videoExists.delete();
-
-    return videoDeletado;
   } catch (err) {
     return response.status(500).json({error: 'Error'});
   }
+  }
 }
-
 module.exports = VideoEventoController;
