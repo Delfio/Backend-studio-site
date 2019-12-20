@@ -31,6 +31,26 @@ class UserController {
       });
     }
   }
+
+  async destroy({ auth, response, request }) {
+    const idSolicitado = request.only(['id']);
+
+    try {
+      const userLogado = await User.find(auth.user.id);
+
+      const userRequest = await User.find(idSolicitado);
+
+      if (auth.user.id !== idSolicitado && !userLogado.ADM) {
+        return response.status(401).json({ error: 'Não autorizado' });
+      }
+
+      await userRequest.delete();
+
+      response.status(200).json({ ok: true });
+    } catch (err) {
+      return response.status(500).json({ error: 'error' });
+    }
+  }
 }
 
 module.exports = UserController;

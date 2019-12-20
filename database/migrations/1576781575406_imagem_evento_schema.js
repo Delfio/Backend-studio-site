@@ -13,7 +13,9 @@ class ImagemEventoSchema extends Schema {
         .integer('evento_id')
         .unsigned()
         .references('id')
-        .inTable('eventos');
+        .inTable('eventos')
+        .onUpdate('CASCADE')
+        .onDelete('CASCADE');
       table.timestamps();
     });
   }

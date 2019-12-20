@@ -50,3 +50,8 @@ Route.group(() => {
   // A imagem só pode ser cadastrada se o evento estiver também
   Route.resource('eventos.imagem', 'ImagemEventoController').apiOnly(); // todos os metodos
 }).middleware(['auth']);
+
+/* Get Users para adms */
+Route.get('users', 'AdministradorController.index').middleware('auth');
+
+Route.delete('users', 'UserController.destroy').middleware('auth');

@@ -13,7 +13,9 @@ class ImageClassificadoSchema extends Schema {
         .integer('classificado_id')
         .unsigned()
         .references('id')
-        .inTable('classificados');
+        .inTable('classificados')
+        .onUpdate('CASCADE')
+        .onDelete('CASCADE');
       table.timestamps();
     });
   }
