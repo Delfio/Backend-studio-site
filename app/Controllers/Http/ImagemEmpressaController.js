@@ -1,3 +1,18 @@
+/** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
+const User = use('App/Models/User');
+
+/** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
+const Empresa = use('App/Models/Empresa');
+
+/** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
+const ImagemEmpressa = use('App/Models/ImagemEmpressa');
+
+/** @typedef {import('@adonisjs/framework/src/Request')} Request */
+/** @typedef {import('@adonisjs/framework/src/Response')} Response */
+/** @typedef {import('@adonisjs/framework/src/View')} View */
+
+const Helpers = use('Helpers');
+
 /** @typedef {import('@adonisjs/framework/src/Request')} Request */
 /** @typedef {import('@adonisjs/framework/src/Response')} Response */
 /** @typedef {import('@adonisjs/framework/src/View')} View */
@@ -15,70 +30,62 @@ class ImagemEmpressaController {
    * @param {Response} ctx.response
    * @param {View} ctx.view
    */
-  async index({ request, response, view }) {}
 
-  /**
-   * Render a form to be used for creating a new imagemempressa.
-   * GET imagemempressas/create
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async create({ request, response, view }) {}
+  async show({ params, response }) {
+    const file = await ImagemEmpressa.find(params.id);
 
-  /**
-   * Create/save a new imagemempressa.
-   * POST imagemempressas
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   */
-  async store({ request, response }) {}
+    if (!file) return;
 
-  /**
-   * Display a single imagemempressa.
-   * GET imagemempressas/:id
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async show({ params, request, response, view }) {}
+    return response.download(
+      Helpers.tmpPath(`uploads/empresas/${file.file}`)
+    );
+  }
 
-  /**
-   * Render a form to update an existing imagemempressa.
-   * GET imagemempressas/:id/edit
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async edit({ params, request, response, view }) {}
+  async store ({ request, auth, params, response }) {
 
-  /**
-   * Update imagemempressa details.
-   * PUT or PATCH imagemempressas/:id
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   */
-  async update({ params, request, response }) {}
+    try{
+      /* Verificação */
+      const userLogado = await User.find(auth.user.id);
 
-  /**
-   * Delete a imagemempressa with id.
-   * DELETE imagemempressas/:id
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   */
-  async destroy({ params, request, response }) {}
+      const empresaExists = await Empresa.find(params.empresas_id);
+
+      if (empresaExists.user_id !== userLogado.id && !userLogado.ADM) {
+        return response.status(401).json({ error: 'Não autorizado' });
+      }
+
+      const upload = request.file('imagem_empresa', {
+        size: '2mb',
+        extnames: ['png', 'jpeg', 'jpg'],
+      });
+
+      if (!upload) {
+        return response.status(404).json({ error: 'Error' });
+      }
+      const fileName = `${Date.now()}.${upload.subtype}`;
+
+      await upload.move(Helpers.tmpPath('uploads/empresas'), {
+        name: fileName,
+      });
+
+      if (!upload.moved()) {
+        throw upload.error();
+      }
+
+      const file = await ImagemEmpressa.create({
+        file: fileName,
+        name: upload.clientName,
+        type: upload.type,
+        subtype: upload.subtype,
+        empresa_id: params.empresas_id,
+      });
+
+      return file;
+    } catch (err) {
+      return response.status(500).json({ error: 'error' });
+    }
+  }
+
+  
 }
 
 module.exports = ImagemEmpressaController;

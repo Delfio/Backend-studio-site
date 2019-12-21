@@ -1,3 +1,9 @@
+/** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
+const Empresa = use('App/Models/Empresa');
+
+/** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
+const User = use('App/Models/User');
+
 /** @typedef {import('@adonisjs/framework/src/Request')} Request */
 /** @typedef {import('@adonisjs/framework/src/Response')} Response */
 /** @typedef {import('@adonisjs/framework/src/View')} View */
@@ -6,79 +12,74 @@
  * Resourceful controller for interacting with empresas
  */
 class EmpresaController {
-  /**
-   * Show a list of all empresas.
-   * GET empresas
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async index({ request, response, view }) {}
 
-  /**
-   * Render a form to be used for creating a new empresa.
-   * GET empresas/create
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async create({ request, response, view }) {}
+  async index({ response }) {
+    try{
+      const empresa = Empresa.query()
+        .with('user')
+        .with('imagens')
+        .with('videos')
+        .fetch();
 
-  /**
-   * Create/save a new empresa.
-   * POST empresas
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   */
-  async store({ request, response }) {}
+      return empresa;
+    } catch (err) {
+      return response.status(500).json({error: 'Error'});
+    }
+  }
 
-  /**
-   * Display a single empresa.
-   * GET empresas/:id
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async show({ params, request, response, view }) {}
+  async store({ request, auth, response }) {
+    const data = request.only([
+      'nome',
+      'descricao',
+      'fone_contato',
+      'fone_contato2',
+      'email_contato',
+      'endereco',
+      'user_id',
+    ]);
 
-  /**
-   * Render a form to update an existing empresa.
-   * GET empresas/:id/edit
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async edit({ params, request, response, view }) {}
+    try{
+      const userADM = await User.find(auth.user.id);
 
-  /**
-   * Update empresa details.
-   * PUT or PATCH empresas/:id
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   */
-  async update({ params, request, response }) {}
+      if ( !userADM.ADM ) {
+        return response.status(401).json({error: 'Não autorizado'});
+      }
+  
+      const empresa = Empresa.create({
+        nome: data.nome,
+        descricao: data.descricao,
+        fone_contato: data.fone_contato,
+        fone_contato2: data.fone_contato2,
+        email_contato: data.email_contato,
+        endereco: data.endereco,
+        user_id: data.user_id || auth.user.id,
+      });
+  
+      return empresa;
+    } catch (err) {
+      return response.status(500).json({error: 'Error'});
+    }
+  }
 
-  /**
-   * Delete a empresa with id.
-   * DELETE empresas/:id
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   */
-  async destroy({ params, request, response }) {}
+  async delete({ params, auth, response }) {
+
+    try{
+      const userADM = await User.find(auth.user.id);
+
+      const empresaExists = await Empresa.find(params.id);
+
+      if ( !userADM.ADM || !empresaExists ) {
+        return response.status(401).json({error: 'Não autorizado'});
+      }
+
+      await empresaExists.delete();
+
+      return;
+    } catch (err) {
+      return response.status(500).json({ error: 'Error' });
+    }
+  }
+
 }
 
 module.exports = EmpresaController;

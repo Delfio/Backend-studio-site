@@ -68,7 +68,7 @@ class ClassificadoController {
     }
   }
 
-  async destroy({ params, response, auth }) {
+  async delete({ params, response, auth }) {
     try {
       const classificado = await Classificado.find(params.id);
 

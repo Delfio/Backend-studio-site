@@ -32,7 +32,7 @@ class UserController {
     }
   }
 
-  async destroy({ auth, response, request }) {
+  async delete({ auth, response, request }) {
     const idSolicitado = request.only(['id']);
 
     try {

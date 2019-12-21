@@ -20,7 +20,7 @@ Route.group(() => {
   // Route.post('imgCadastros', 'ImageClassificadoController.store'); // Enviar imagens
   Route.post('classificados', 'ClassificadoController.store'); // Cadastrar classificado
   Route.put('classificados/:id', 'ClassificadoController.update'); // Atualizar classificados
-  Route.delete('classificados/:id', 'ClassificadoController.destroy'); // Show classificados
+  Route.delete('classificados/:id', 'ClassificadoController.delete'); // Show classificados
 }).middleware('auth');
 
 /* Imagem dos classificados */
@@ -63,20 +63,37 @@ Route.group(() => {
 /* Videos dos eventos */
 Route.group(() => {
   // O video só pode ser cadastrado se o evento estiver também
-  Route.resource(
-    'eventos.video',
-    'VideoEventoController'
-  ).apiOnly(); // todos os metodos
+  Route.resource('eventos.video', 'VideoEventoController').apiOnly(); // todos os metodos
 }).middleware(['auth']);
 
 /* ##############    Eventos    ############## */
+
+/* ##############    EMPRESAS    ############## */
+
+Route.get('empresas', 'EmpresaController.index');
+Route.get('empresas/:id', 'EmpresaController.show');
+
+Route.group(() => {
+  Route.post('empresas', 'EmpresaController.store');
+  Route.delete('empresas/:id', 'EmpresaController.delete');
+}).middleware('auth');
+
+
+Route.group(() => {
+  Route.resource('empresas.servico', 'ServicoController').apiOnly();
+  Route.resource('empresas.imagem', 'ImagemEmpressaController').apiOnly();
+}).middleware('auth');
+
+Route.get('imgEmpresas/:id', 'ImagemEmpressaController.show');
+
+/* ##############    EMPRESAS    ############## */
 
 /* ##############    ADMIM    ############## */
 
 /* Get Users para adms */
 Route.get('users', 'AdministradorController.index').middleware('auth');
 
-Route.delete('users', 'UserController.destroy').middleware('auth');
+Route.delete('users', 'UserController.delete').middleware('auth');
 
 /* cadastro */
 Route.group(() => {

@@ -42,7 +42,7 @@ class VideoEmpressaController {
         titulo: data.titulo,
         link: data.link,
         descricao: data.descricao,
-        classificado_id: data.empresas_id || params.empresas_id,
+        empresa_id: data.empresas_id || params.empresas_id,
       });
 
       return video;

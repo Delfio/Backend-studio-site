@@ -4,7 +4,7 @@ const Schema = use('Schema')
 class ServicoSchema extends Schema {
   up () {
     this.create('servicos', (table) => {
-      table.increments()
+      table.increments();
       table.string('nome', 200).notNullable();
       table.text('descricao').notNullable();
       table
@@ -15,7 +15,7 @@ class ServicoSchema extends Schema {
         .onUpdate('CASCADE')
         .onDelete('CASCADE')
         .notNullable();
-      table.timestamps()
+      table.timestamps();
     })
   }
 
@@ -24,4 +24,4 @@ class ServicoSchema extends Schema {
   }
 }
 
-module.exports = ServicoSchema
+module.exports = ServicoSchema;
