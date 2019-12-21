@@ -32,7 +32,7 @@ class VideoEventoController {
 
       const eventoExists = await Evento.find(params.eventos_id);
 
-      if (!userAdmin && !eventoExists) {
+      if (!userAdmin.ADM && eventoExists.user_id !== auth.user.id) {
         return response.status(401).json({ error: 'Não autorizado' });
       }
 
@@ -40,7 +40,7 @@ class VideoEventoController {
 
       const video = VideoEvento.create({
         ...data,
-        evento_id: params.evento_id,
+        evento_id: params.eventos_id,
       });
 
       return video;
@@ -49,26 +49,25 @@ class VideoEventoController {
     }
   }
 
-  async destoy({ auth, request, params, response }) {
+  async destoy({ auth, params, response }) {
     try {
-        /* Verificação */
-        const userLogado = await User.find(auth.params.id);
+      /* Verificação */
+      const userLogado = await User.find(auth.params.id);
 
-        const evento = await Evento.find(params.evento_id);
-  
-        if(!userLogado.ADM ||evento.user_id !== auth.user.id){
-          return response.status(401).json({error: 'Não autorizado'})
-        }
-  
-        const video = await VideoEvento.find(params.video);
-  
-        video.delete();
-        
-        return;
+      const evento = await Evento.find(params.evento_id);
 
-  } catch (err) {
-    return response.status(500).json({error: 'Error'});
-  }
+      if (!userLogado.ADM || evento.user_id !== auth.user.id) {
+        return response.status(401).json({ error: 'Não autorizado' });
+      }
+
+      const video = await VideoEvento.find(params.video);
+
+      video.delete();
+
+      return;
+    } catch (err) {
+      return response.status(500).json({ error: 'Error' });
+    }
   }
 }
 module.exports = VideoEventoController;

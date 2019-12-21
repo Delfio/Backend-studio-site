@@ -28,7 +28,7 @@ class EventoController {
 
       await evento.load('user');
       await evento.load('imagens');
-      // await evento.load('videos'); implementar depois do migration
+      await evento.load('videos');
 
       if (!evento) return;
 
@@ -42,8 +42,8 @@ class EventoController {
     const eventos = Evento.query()
       .with('user')
       .with('imagens')
+      .with('videos')
       .fetch();
-    // .with('videos') implementar depois do migrations
 
     return eventos;
   }

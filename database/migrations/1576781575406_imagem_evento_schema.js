@@ -15,7 +15,8 @@ class ImagemEventoSchema extends Schema {
         .references('id')
         .inTable('eventos')
         .onUpdate('CASCADE')
-        .onDelete('CASCADE');
+        .onDelete('CASCADE')
+        .notNullable();
       table.timestamps();
     });
   }

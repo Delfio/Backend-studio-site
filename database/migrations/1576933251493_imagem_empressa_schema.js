@@ -1,29 +1,31 @@
-/** @type {import('@adonisjs/lucid/src/Schema')} */
-const Schema = use('Schema');
+'use strict'
 
-class ImageClassificadoSchema extends Schema {
-  up() {
-    this.create('image_classificados', table => {
-      table.increments();
+/** @type {import('@adonisjs/lucid/src/Schema')} */
+const Schema = use('Schema')
+
+class ImagemEmpressaSchema extends Schema {
+  up () {
+    this.create('imagem_empressas', (table) => {
+      table.increments()
       table.string('file').notNullable();
       table.string('name').notNullable();
       table.string('type', 20).notNullable();
       table.string('subtype', 20).notNullable();
       table
-        .integer('classificado_id')
+        .integer('empresas_id')
         .unsigned()
         .references('id')
-        .inTable('classificados')
+        .inTable('empresas')
         .onUpdate('CASCADE')
         .onDelete('CASCADE')
         .notNullable();
-      table.timestamps();
-    });
+      table.timestamps()
+    })
   }
 
-  down() {
-    this.drop('image_classificados');
+  down () {
+    this.drop('imagem_empressas')
   }
 }
 
-module.exports = ImageClassificadoSchema;
+module.exports = ImagemEmpressaSchema

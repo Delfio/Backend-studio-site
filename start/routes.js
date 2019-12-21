@@ -8,7 +8,7 @@ Route.put('users/:id', 'UserController.update').middleware('auth'); // Update de
 Route.post('forgot', 'ForgotPasswordController.store'); // Email para recuperaçaõ de senha
 Route.post('reset', 'ResetPasswordController.store'); // Mudar a senha
 
-/* Classificados */
+/* ##############    CLASSIFICADOS    ############## */
 
 Route.get('imgCadastros/:id', 'ImageClassificadoController.show'); // Ver imagem sem estar logado;
 
@@ -32,12 +32,18 @@ Route.group(() => {
   ).apiOnly(); // todos os metodos
 }).middleware(['auth']);
 
-/* Admin */
+/* Videos dos classificados */
 Route.group(() => {
-  Route.post('admin', 'AdministradorController.store');
+  // O video só pode ser cadastrado se o classificado estiver também
+  Route.resource(
+    'classificados.video',
+    'VideoClassificadoController'
+  ).apiOnly(); // todos os metodos
 }).middleware(['auth']);
 
-/* Eventos */
+/* ##############    CLASSIFICADOS    ############## */
+
+/* ##############    Eventos    ############## */
 
 Route.get('eventos', 'EventoController.index');
 Route.get('eventos/:id', 'EventoController.show');
@@ -54,7 +60,27 @@ Route.group(() => {
   Route.resource('eventos.imagem', 'ImagemEventoController').apiOnly(); // todos os metodos
 }).middleware(['auth']);
 
+/* Videos dos eventos */
+Route.group(() => {
+  // O video só pode ser cadastrado se o evento estiver também
+  Route.resource(
+    'eventos.video',
+    'VideoEventoController'
+  ).apiOnly(); // todos os metodos
+}).middleware(['auth']);
+
+/* ##############    Eventos    ############## */
+
+/* ##############    ADMIM    ############## */
+
 /* Get Users para adms */
 Route.get('users', 'AdministradorController.index').middleware('auth');
 
 Route.delete('users', 'UserController.destroy').middleware('auth');
+
+/* cadastro */
+Route.group(() => {
+  Route.post('admin', 'AdministradorController.store');
+}).middleware(['auth']);
+
+/* ##############    ADMIM    ############## */

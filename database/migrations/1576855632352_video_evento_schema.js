@@ -13,6 +13,8 @@ class VideoEventoSchema extends Schema {
         .unsigned()
         .references('id')
         .inTable('eventos')
+        .onUpdate('CASCADE')
+        .onDelete('CASCADE')
         .notNullable();
       table.timestamps();
     });

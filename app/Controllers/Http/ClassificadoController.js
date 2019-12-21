@@ -15,8 +15,8 @@ class ClassificadoController {
     const classificados = Classificado.query()
       .with('user')
       .with('imagens')
+      .with('videos')
       .fetch();
-    // .with('videos')
 
     return classificados;
   }
@@ -37,7 +37,7 @@ class ClassificadoController {
 
     await classificado.load('user');
     await classificado.load('imagens');
-    // await classificado.load('videos');
+    await classificado.load('videos');
 
     if (!classificado) return;
 

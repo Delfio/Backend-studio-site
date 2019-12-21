@@ -31,10 +31,10 @@ class VideoClassificadoController {
       const userLogado = await User.find(auth.user.id);
 
       const classificadoExists = await Classificado.find(
-        params.classificado_id
+        params.classificados_id
       );
 
-      if (classificadoExists.user_id !== userLogado.id || !userLogado.ADM) {
+      if (classificadoExists.user_id !== userLogado.id && !userLogado.ADM) {
         return response.status(401).json({ error: 'Não autorizado' });
       }
 
@@ -42,14 +42,14 @@ class VideoClassificadoController {
         'link',
         'titulo',
         'descricao',
-        'classificado_id',
+        'classificados_id',
       ]);
 
       const video = VideoClassificado.create({
         titulo: data.titulo,
         link: data.link,
         descricao: data.descricao,
-        classificado_id: data.classificado_id || params.evento_id,
+        classificado_id: data.classificados_id || params.classificados_id,
       });
 
       return video;
@@ -60,24 +60,23 @@ class VideoClassificadoController {
 
   async delete({ auth, params, response }) {
     try {
-
       /* Verificação */
       const userLogado = await User.find(auth.params.id);
 
       const classificado = await Classificado.find(params.classificado_id);
 
-      if(!userLogado.ADM ||classificado.user_id !== auth.user.id){
-        return response.status(401).json({error: 'Não autorizado'})
+      if (!userLogado.ADM || classificado.user_id !== auth.user.id) {
+        return response.status(401).json({ error: 'Não autorizado' });
       }
 
       const video = await VideoClassificado.find(params.video);
 
       video.delete();
-      
+
       return;
-  } catch (err) {
-    return response.status(500).json({ error: 'Error' });
-  }
+    } catch (err) {
+      return response.status(500).json({ error: 'Error' });
+    }
   }
 }
 

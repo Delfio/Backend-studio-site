@@ -14,7 +14,8 @@ class EventoSchema extends Schema {
         .integer('user_id')
         .unsigned()
         .references('id')
-        .inTable('users');
+        .inTable('users')
+        .notNullable();
       table.timestamps();
     });
   }
