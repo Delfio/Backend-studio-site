@@ -36,14 +36,11 @@ class ImagemEmpressaController {
 
     if (!file) return;
 
-    return response.download(
-      Helpers.tmpPath(`uploads/empresas/${file.file}`)
-    );
+    return response.download(Helpers.tmpPath(`uploads/empresas/${file.file}`));
   }
 
-  async store ({ request, auth, params, response }) {
-
-    try{
+  async store({ request, auth, params, response }) {
+    try {
       /* Verificação */
       const userLogado = await User.find(auth.user.id);
 
@@ -84,8 +81,6 @@ class ImagemEmpressaController {
       return response.status(500).json({ error: 'error' });
     }
   }
-
-  
 }
 
 module.exports = ImagemEmpressaController;

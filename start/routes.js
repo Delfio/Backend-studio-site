@@ -26,19 +26,18 @@ Route.group(() => {
 /* Imagem dos classificados */
 Route.group(() => {
   // A imagem só pode ser cadastrada se o classificado estiver também
-  Route.resource(
-    'classificados.imagem',
-    'ImageClassificadoController'
-  ).apiOnly(); // todos os metodos
+  // todos os metodos
+  Route.resource('classificados.imagem', 'ImageClassificadoController')
+    .apiOnly()
+    .except(['index', 'show', 'destroy']);
 }).middleware(['auth']);
 
 /* Videos dos classificados */
 Route.group(() => {
   // O video só pode ser cadastrado se o classificado estiver também
-  Route.resource(
-    'classificados.video',
-    'VideoClassificadoController'
-  ).apiOnly(); // todos os metodos
+  Route.resource('classificados.video', 'VideoClassificadoController')
+    .apiOnly()
+    .except(['index', 'show', 'destroy']); // todos os metodos
 }).middleware(['auth']);
 
 /* ##############    CLASSIFICADOS    ############## */
@@ -57,13 +56,17 @@ Route.get('imgEvento/:id', 'ImagemEventoController.show'); // Ver imagem sem est
 /* Imagem do evento */
 Route.group(() => {
   // A imagem só pode ser cadastrada se o evento estiver também
-  Route.resource('eventos.imagem', 'ImagemEventoController').apiOnly(); // todos os metodos
+  Route.resource('eventos.imagem', 'ImagemEventoController')
+    .apiOnly()
+    .except(['index', 'show', 'update', 'destroy']); // todos os metodos
 }).middleware(['auth']);
 
 /* Videos dos eventos */
 Route.group(() => {
   // O video só pode ser cadastrado se o evento estiver também
-  Route.resource('eventos.video', 'VideoEventoController').apiOnly(); // todos os metodos
+  Route.resource('eventos.video', 'VideoEventoController')
+    .apiOnly()
+    .except(['index', 'show', 'update', 'destroy']); // todos os metodos
 }).middleware(['auth']);
 
 /* ##############    Eventos    ############## */
@@ -78,10 +81,13 @@ Route.group(() => {
   Route.delete('empresas/:id', 'EmpresaController.delete');
 }).middleware('auth');
 
-
 Route.group(() => {
-  Route.resource('empresas.servico', 'ServicoController').apiOnly();
-  Route.resource('empresas.imagem', 'ImagemEmpressaController').apiOnly();
+  Route.resource('empresas.servico', 'ServicoController')
+    .apiOnly()
+    .except(['destroy']);
+  Route.resource('empresas.imagem', 'ImagemEmpressaController')
+    .apiOnly()
+    .except(['index', 'show', 'update', 'destroy']);
 }).middleware('auth');
 
 Route.get('imgEmpresas/:id', 'ImagemEmpressaController.show');

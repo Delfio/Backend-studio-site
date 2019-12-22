@@ -12,7 +12,7 @@ class ImagemEmpressaSchema extends Schema {
       table.string('type', 20).notNullable();
       table.string('subtype', 20).notNullable();
       table
-        .integer('empresas_id')
+        .integer('empresa_id')
         .unsigned()
         .references('id')
         .inTable('empresas')

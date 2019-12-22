@@ -24,12 +24,11 @@ class ServicoController {
    * @param {Response} ctx.response
    * @param {View} ctx.view
    */
-  
-  async store ({ request, auth, params, response }) {
+
+  async store({ request, auth, params, response }) {
     const data = request.only(['nome', 'descricao', 'empresas_id']);
 
-    try{
-
+    try {
       /* Verificação */
       const userLogado = await User.find(auth.user.id);
 
@@ -43,10 +42,10 @@ class ServicoController {
         nome: data.nome,
         descricao: data.descricao,
         empresas_id: data.empresas_id || params.empresas_id,
-      })
+      });
 
       return servico;
-    }catch(err){
+    } catch (err) {
       return response.status(500).json({ error: 'Error' });
     }
   }

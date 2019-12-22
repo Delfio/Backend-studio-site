@@ -77,10 +77,56 @@ class ImageClassificadoController {
     );
   }
 
-  async update({  }) {
+  async update({ params, response, auth, request }) {
+    const upload = request.file('imagens_cadastro', {
+      size: '2mb',
+      extnames: ['png', 'jpeg', 'jpg'],
+    });
 
+    try {
+      const classificadoExists = await Classificado.find(
+        params.classificados_id
+      );
+
+      const imagemExists = await ImageClassificado.find(params.id);
+
+      const userLogado = await User.find(auth.user.id);
+
+      if (!classificadoExists || !imagemExists) {
+        return response.status(404).json({ Error: 'NotFound' });
+      }
+
+      if (auth.user.id !== classificadoExists.user_id && !userLogado.ADM) {
+        return response.status(401).json({ Error: 'Não autorizad' });
+      }
+
+      const fileName = `${Date.now()}.${upload.subtype}`;
+
+      await upload.move(Helpers.tmpPath('uploads/classificados'), {
+        name: fileName,
+      });
+
+      if (!upload.moved()) {
+        throw upload.error();
+      }
+
+      const data = {
+        file: fileName,
+        name: upload.clientName,
+        type: upload.type,
+        subtype: upload.subtype,
+        classificado_id: params.classificados_id,
+      };
+
+      imagemExists.merge(data);
+
+      await imagemExists.save();
+
+      return imagemExists;
+    } catch (err) {
+      return response.status(500).json({ Error: 'Error' });
+    }
   }
-
 }
 
 module.exports = ImageClassificadoController;

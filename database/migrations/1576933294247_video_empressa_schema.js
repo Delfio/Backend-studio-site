@@ -11,7 +11,7 @@ class VideoEmpressaSchema extends Schema {
       table.string('titulo', 200);
       table.text('descricao', 200);
       table
-        .integer('empresas_id')
+        .integer('empresa_id')
         .unsigned()
         .references('id')
         .inTable('empresas')

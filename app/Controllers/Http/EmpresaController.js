@@ -12,9 +12,8 @@ const User = use('App/Models/User');
  * Resourceful controller for interacting with empresas
  */
 class EmpresaController {
-
   async index({ response }) {
-    try{
+    try {
       const empresa = Empresa.query()
         .with('user')
         .with('imagens')
@@ -23,7 +22,7 @@ class EmpresaController {
 
       return empresa;
     } catch (err) {
-      return response.status(500).json({error: 'Error'});
+      return response.status(500).json({ error: 'Error' });
     }
   }
 
@@ -38,13 +37,13 @@ class EmpresaController {
       'user_id',
     ]);
 
-    try{
+    try {
       const userADM = await User.find(auth.user.id);
 
-      if ( !userADM.ADM ) {
-        return response.status(401).json({error: 'Não autorizado'});
+      if (!userADM.ADM) {
+        return response.status(401).json({ error: 'Não autorizado' });
       }
-  
+
       const empresa = Empresa.create({
         nome: data.nome,
         descricao: data.descricao,
@@ -54,22 +53,21 @@ class EmpresaController {
         endereco: data.endereco,
         user_id: data.user_id || auth.user.id,
       });
-  
+
       return empresa;
     } catch (err) {
-      return response.status(500).json({error: 'Error'});
+      return response.status(500).json({ error: 'Error' });
     }
   }
 
   async delete({ params, auth, response }) {
-
-    try{
+    try {
       const userADM = await User.find(auth.user.id);
 
       const empresaExists = await Empresa.find(params.id);
 
-      if ( !userADM.ADM || !empresaExists ) {
-        return response.status(401).json({error: 'Não autorizado'});
+      if (!userADM.ADM || !empresaExists) {
+        return response.status(401).json({ error: 'Não autorizado' });
       }
 
       await empresaExists.delete();
@@ -79,7 +77,6 @@ class EmpresaController {
       return response.status(500).json({ error: 'Error' });
     }
   }
-
 }
 
 module.exports = EmpresaController;

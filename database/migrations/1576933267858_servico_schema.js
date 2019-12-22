@@ -8,7 +8,7 @@ class ServicoSchema extends Schema {
       table.string('nome', 200).notNullable();
       table.text('descricao').notNullable();
       table
-        .integer('empresas_id')
+        .integer('empresa_id')
         .unsigned()
         .references('id')
         .inTable('empresas')

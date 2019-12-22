@@ -12,7 +12,6 @@ class ImagemEmpressa extends Model {
   getUrl({ id }) {
     return `${Env.get('APP_URL')}/imgEmpresas/${id}`;
   }
-
 }
 
 module.exports = ImagemEmpressa;

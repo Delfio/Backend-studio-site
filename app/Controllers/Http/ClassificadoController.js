@@ -3,6 +3,12 @@
 /** @typedef {import('@adonisjs/framework/src/View')} View */
 
 /** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
+const VideoClassificado = use('App/Models/VideoClassificado');
+
+/** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
+const ImageClassificado = use('App/Models/ImageClassificado');
+
+/** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
 const Classificado = use('App/Models/Classificado');
 
 /** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
@@ -48,7 +54,7 @@ class ClassificadoController {
     const data = request.only(['titulo', 'descricao', 'fone_contato', 'preco']);
 
     try {
-      const classificado = await Classificado.find(params);
+      const classificado = await Classificado.find(params.id);
 
       const dono = await User.find(auth.user.id);
 
@@ -70,13 +76,35 @@ class ClassificadoController {
 
   async delete({ params, response, auth }) {
     try {
-      const classificado = await Classificado.find(params.id);
+      const classificado = await Classificado.findByOrFail('id', params.id);
 
       const dono = await User.find(auth.user.id);
 
-      if (classificado.user_id !== auth.user.id && !dono.ADM) {
+      if (
+        (classificado.user_id !== auth.user.id && !dono.ADM) ||
+        !classificado
+      ) {
         return response.status(401).json({ error: 'não autorizado' });
       }
+
+      while (true) {
+        const imagemClassificado = await ImageClassificado.findBy(
+          'classificado_id',
+          classificado.id
+        );
+
+        const videoClassificado = await VideoClassificado.findBy(
+          'classificado_id',
+          classificado.id
+        );
+
+        if (imagemClassificado) await imagemClassificado.delete();
+
+        if (videoClassificado) await videoClassificado.delete();
+
+        if (!imagemClassificado && !videoClassificado) break;
+      }
+
       await classificado.delete();
     } catch (err) {
       return response

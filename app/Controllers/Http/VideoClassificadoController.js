@@ -78,6 +78,37 @@ class VideoClassificadoController {
       return response.status(500).json({ error: 'Error' });
     }
   }
+
+  async update({ params, request, response, auth }) {
+    const data = request.only([
+      'link',
+      'titulo',
+      'descricao',
+      'classificados_id',
+    ]);
+
+    try {
+      const userLogado = await User.find(auth.user.id);
+
+      const classificadoExists = await Classificado.find(
+        params.classificados_id
+      );
+
+      const videoExits = await VideoClassificado.find(params.id);
+
+      if (classificadoExists.user_id !== userLogado.id && !userLogado.ADM) {
+        return response.status(401).json({ error: 'Não autorizado' });
+      }
+
+      videoExits.merge(data);
+
+      await videoExits.save();
+
+      return videoExits;
+    } catch (err) {
+      return response.status(500).json({ error: 'Error' });
+    }
+  }
 }
 
 module.exports = VideoClassificadoController;
