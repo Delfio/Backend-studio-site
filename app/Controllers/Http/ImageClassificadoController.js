@@ -76,6 +76,11 @@ class ImageClassificadoController {
       Helpers.tmpPath(`uploads/classificados/${file.file}`)
     );
   }
+
+  async update({  }) {
+
+  }
+
 }
 
 module.exports = ImageClassificadoController;
