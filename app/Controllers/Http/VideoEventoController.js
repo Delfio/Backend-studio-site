@@ -69,5 +69,32 @@ class VideoEventoController {
       return response.status(500).json({ error: 'Error' });
     }
   }
+
+  async update({ request, params, response, auth }) {
+    try {
+      const userLogado = await User.find(auth.user.id);
+
+      const evento = await Evento.find(params.eventos_id);
+
+      if (!userLogado.ADM && evento.user_id !== userLogado.id) {
+        return response.status(401).error({ error: 'Não autorizado' });
+      }
+      const video = await VideoEvento.find(params.id);
+
+      if (!video) {
+        return response.status(404).json({ error: 'Video NOT FOUND' });
+      }
+
+      const data = request.only(['link', 'titulo', 'descricao']);
+
+      video.merge(data);
+
+      await video.save();
+
+      return video;
+    } catch (err) {
+      return response.status(500).json({ error: err.message });
+    }
+  }
 }
 module.exports = VideoEventoController;

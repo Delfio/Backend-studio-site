@@ -76,6 +76,75 @@ class ImagemEventoController {
 
     return response.download(Helpers.tmpPath(`uploads/eventos/${file.file}`));
   }
+
+  async update({ params, response, auth, request }) {
+    const upload = request.file('imagem_evento', {
+      size: '2mb',
+      extnames: ['png', 'jpeg', 'jpg'],
+    });
+
+    try {
+      const eventoExists = await Evento.find(params.eventos_id);
+
+      const imagemExists = await ImagemEvento.find(params.id);
+
+      const userLogado = await User.find(auth.user.id);
+
+      if (!eventoExists || !imagemExists) {
+        return response.status(404).json({ Error: 'NotFound' });
+      }
+
+      if (auth.user.id !== eventoExists.user_id && !userLogado.ADM) {
+        return response.status(401).json({ Error: 'Não autorizad' });
+      }
+
+      const fileName = `${Date.now()}.${upload.subtype}`;
+
+      await upload.move(Helpers.tmpPath('uploads/eventos'), {
+        name: fileName,
+      });
+
+      if (!upload.moved()) {
+        throw upload.error();
+      }
+
+      const data = {
+        file: fileName,
+        name: upload.clientName,
+        type: upload.type,
+        subtype: upload.subtype,
+        classificado_id: params.classificados_id,
+      };
+
+      imagemExists.merge(data);
+
+      await imagemExists.save();
+
+      return imagemExists;
+    } catch (err) {
+      return response.status(500).json({ Error: err.message });
+    }
+  }
+
+  async delete({ params, response, auth }) {
+    try {
+      const userLogado = await User.find(auth.user.id);
+
+      const evento = await Evento.find(params.eventos_id);
+
+      if (evento.user_id !== userLogado.id && !userLogado.ADM) {
+        return response.status(401).json({ error: 'Não autorizado' });
+      }
+
+      const imagem = await ImagemEvento.find(params.id);
+
+      await imagem.delete();
+
+      return;
+    } catch (err) {
+      return response.status(500).json({ error: err.message });
+    }
+  }
 }
 
 module.exports = ImagemEventoController;

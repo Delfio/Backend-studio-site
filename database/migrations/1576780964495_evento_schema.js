@@ -8,7 +8,7 @@ class EventoSchema extends Schema {
       table.string('titulo', 200).notNullable();
       table.text('descricao').notNullable();
       table.string('phone_contato', 11).defaultTo('Null');
-      table.string('email_contato', 11).defaultTo('Null');
+      table.string('email_contato').defaultTo('Null');
       table.string('responsavel', 120).defaultTo('Null');
       table
         .integer('user_id')

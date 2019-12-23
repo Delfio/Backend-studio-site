@@ -61,21 +61,21 @@ class VideoClassificadoController {
   async delete({ auth, params, response }) {
     try {
       /* Verificação */
-      const userLogado = await User.find(auth.params.id);
+      const userLogado = await User.find(auth.user.id);
 
-      const classificado = await Classificado.find(params.classificado_id);
+      const classificado = await Classificado.find(params.classificados_id);
 
-      if (!userLogado.ADM || classificado.user_id !== auth.user.id) {
+      if (!userLogado.ADM && classificado.user_id !== auth.user.id) {
         return response.status(401).json({ error: 'Não autorizado' });
       }
 
-      const video = await VideoClassificado.find(params.video);
+      const video = await VideoClassificado.find(params.id);
 
       video.delete();
 
       return;
     } catch (err) {
-      return response.status(500).json({ error: 'Error' });
+      return response.status(500).json({ error: err.message });
     }
   }
 

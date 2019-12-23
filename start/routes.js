@@ -40,34 +40,47 @@ Route.group(() => {
     .except(['index', 'show', 'destroy']); // todos os metodos
 }).middleware(['auth']);
 
+Route.delete(
+  'classificados/:classificados_id/video/:id',
+  'VideoClassificadoController.delete'
+).middleware('auth');
+
+Route.delete(
+  'classificados/:classificados_id/imagem/:id',
+  'ImageClassificadoController.delete'
+).middleware('auth');
+
 /* ##############    CLASSIFICADOS    ############## */
 
 /* ##############    Eventos    ############## */
 
 Route.get('eventos', 'EventoController.index');
 Route.get('eventos/:id', 'EventoController.show');
+Route.get('imgEvento/:id', 'ImagemEventoController.show'); // Ver imagem sem estar logado;
 
 Route.group(() => {
   Route.post('eventos', 'EventoController.store');
-}).middleware('auth');
-
-Route.get('imgEvento/:id', 'ImagemEventoController.show'); // Ver imagem sem estar logado;
-
-/* Imagem do evento */
-Route.group(() => {
+  Route.put('eventos/:id', 'EventoController.update');
   // A imagem só pode ser cadastrada se o evento estiver também
   Route.resource('eventos.imagem', 'ImagemEventoController')
     .apiOnly()
-    .except(['index', 'show', 'update', 'destroy']); // todos os metodos
-}).middleware(['auth']);
+    .except(['index', 'show', 'destroy']); // todos os metodos
+}).middleware('auth');
 
 /* Videos dos eventos */
 Route.group(() => {
   // O video só pode ser cadastrado se o evento estiver também
   Route.resource('eventos.video', 'VideoEventoController')
     .apiOnly()
-    .except(['index', 'show', 'update', 'destroy']); // todos os metodos
+    .except(['index', 'show', 'destroy']); // todos os metodos
 }).middleware(['auth']);
+
+Route.delete('eventos/:id', 'EventoController.delete').middleware('auth');
+
+Route.delete(
+  '/eventos/:eventos_id/imagem/:id',
+  'ImagemEventoController.delete'
+).middleware('auth');
 
 /* ##############    Eventos    ############## */
 

@@ -127,6 +127,27 @@ class ImageClassificadoController {
       return response.status(500).json({ Error: 'Error' });
     }
   }
+
+  async delete({ response, params, auth }) {
+    try {
+      const userLogado = await User.find(auth.user.id);
+
+      const classificado = await Classificado.find(params.classificados_id);
+
+      if (classificado.user_id !== auth.user.id && !userLogado.ADM) {
+        return response.status(401).error({ Error: 'Não autorizado' });
+      }
+
+      const imagem = await ImageClassificado.find(params.id);
+
+      if (!imagem) return response.status(400).json({ error: 'Not Found' });
+
+      await imagem.delete();
+      return;
+    } catch (err) {
+      return response.status(err.status).json({ error: err.message });
+    }
+  }
 }
 
 module.exports = ImageClassificadoController;
