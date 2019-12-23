@@ -46,6 +46,8 @@ class ImagemEmpressaController {
 
       const empresaExists = await Empresa.find(params.empresas_id);
 
+      if(!empresaExists) return;
+
       if (empresaExists.user_id !== userLogado.id && !userLogado.ADM) {
         return response.status(401).json({ error: 'Não autorizado' });
       }
@@ -78,7 +80,74 @@ class ImagemEmpressaController {
 
       return file;
     } catch (err) {
-      return response.status(500).json({ error: 'error' });
+      return response.status(500).json({ error: err.message });
+    }
+  }
+
+  async update({ request, auth, params, response }) {
+    try {
+      const userLogado = await User.find(auth.user.id);
+
+      const empresaExists = await Empresa.find(params.empresas_id);
+
+      if (empresaExists.user_id !== userLogado.id && !userLogado.ADM) {
+        return response.status(401).json({ error: 'Não autorizado' });
+      }
+
+      const imagem = await ImagemEmpressa.find(params.id);
+
+      if (!imagem) return;
+
+      const upload = request.file('imagem_empresa', {
+        size: '2mb',
+        extnames: ['png', 'jpeg', 'jpg'],
+      });
+
+      if (!upload) {
+        return response.status(404).json({ error: 'Error' });
+      }
+      const fileName = `${Date.now()}.${upload.subtype}`;
+
+      await upload.move(Helpers.tmpPath('uploads/empresas'), {
+        name: fileName,
+      });
+
+      if (!upload.moved()) {
+        throw upload.error();
+      }
+
+      const data = {
+        file: fileName,
+        name: upload.clientName,
+        type: upload.type,
+        subtype: upload.subtype,
+        empresa_id: params.empresas_id,
+      };
+
+      imagem.merge(data);
+      await imagem.save();
+
+      return imagem;
+    } catch (err) {
+      return response.status(500).json({ error: err.message });
+    }
+  }
+
+  async delete({ params, auth, response }) {
+    try {
+      const userLogado = await User.find(auth.user.id);
+
+      const imagem = await ImagemEmpressa.find(params.id);
+
+      if (!userLogado.ADM || !imagem) {
+        return response.status(401).json({ error: 'Não autorizado' });
+      }
+
+      await imagem.delete();
+
+      return;
+    } catch (err) {
+      return response.status(500).json({ error: err.message });
     }
   }
 }

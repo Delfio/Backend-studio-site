@@ -16,6 +16,10 @@ class Empresa extends Model {
     // Uma empresa tem vários vídeos
     return this.hasMany('App/Models/VideoEmpressa');
   }
+  servicos() {
+    // Uma empresa tem vários vídeos
+    return this.hasMany('App/Models/Servico');
+  }
 }
 
 module.exports = Empresa;

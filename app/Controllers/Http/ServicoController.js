@@ -26,7 +26,7 @@ class ServicoController {
    */
 
   async store({ request, auth, params, response }) {
-    const data = request.only(['nome', 'descricao', 'empresas_id']);
+    const data = request.only(['nome', 'descricao', 'empresa_id']);
 
     try {
       /* Verificação */
@@ -41,12 +41,57 @@ class ServicoController {
       const servico = Servico.create({
         nome: data.nome,
         descricao: data.descricao,
-        empresas_id: data.empresas_id || params.empresas_id,
+        empresa_id: data.empresa_id || params.empresas_id,
       });
 
       return servico;
     } catch (err) {
-      return response.status(500).json({ error: 'Error' });
+      return response.status(500).json({ error: err.message });
+    }
+  }
+
+  async update({ request, auth, params, response }) {
+    try {
+      /* Verificação */
+      const servicoExists = await Servico.find(params.id);
+
+      if (!servicoExists) return;
+
+      const userLogado = await User.find(auth.user.id);
+
+      const empresaExists = await Empresa.find(params.empresas_id);
+
+      if (empresaExists.user_id !== userLogado.id && !userLogado.ADM) {
+        return response.status(401).json({ error: 'Não autorizado' });
+      }
+
+      const data = request.only(['nome', 'descricao', 'empresa_id']);
+
+      servicoExists.merge(data);
+
+      await servicoExists.save();
+
+      return servicoExists;
+    }catch(err){
+      
+    }
+  }
+
+  async delete({ params, auth, response }){
+    try {
+      const userLogado = await User.find(auth.user.id);
+
+      const servico = await Servico.find(params.id);
+
+      if(!userLogado.ADM && !servico) {
+        return response.status(404).json({ error: 'Not Found' });
+      }
+
+      await servico.delete();
+
+      return;
+    }catch(err){
+      return response.status(500).json({error: err.message});
     }
   }
 }

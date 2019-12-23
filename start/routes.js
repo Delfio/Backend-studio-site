@@ -92,15 +92,31 @@ Route.get('empresas/:id', 'EmpresaController.show');
 Route.group(() => {
   Route.post('empresas', 'EmpresaController.store');
   Route.delete('empresas/:id', 'EmpresaController.delete');
+  Route.put('empresas/:id', 'EmpresaController.update');
 }).middleware('auth');
 
 Route.group(() => {
   Route.resource('empresas.servico', 'ServicoController')
     .apiOnly()
-    .except(['destroy']);
+    .except(['destroy', 'show']);
+  Route.delete('empresas/servico/:id', 'ServicoController.delete');
+
   Route.resource('empresas.imagem', 'ImagemEmpressaController')
     .apiOnly()
-    .except(['index', 'show', 'update', 'destroy']);
+    .except(['index', 'show', 'destroy']);
+  Route.delete('empresas/imagem/:id', 'ImagemEmpressaController.delete');
+
+  Route.resource('empresas.video', 'VideoEmpressaController')
+    .apiOnly()
+    .except(['index', 'show', 'destoy']);
+  Route.delete('empresas/video/:id', 'VideoEmpressaController.delete');
+
+  /*
+  Route.put(
+    'empresas/:empresas_id/imagem/:id',
+    'ImagemEmpressaController.update'
+  );
+  */
 }).middleware('auth');
 
 Route.get('imgEmpresas/:id', 'ImagemEmpressaController.show');

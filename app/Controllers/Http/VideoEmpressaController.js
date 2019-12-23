@@ -47,7 +47,58 @@ class VideoEmpressaController {
 
       return video;
     } catch (err) {
-      return response.status(500).json({ error: 'Error' });
+      return response.status(500).json({ error: err.message });
+    }
+  }
+
+  async update({ request, auth, response, params }) {
+    try {
+      /* Verificação */
+      const userLogado = await User.find(auth.user.id);
+
+      const empresaExists = await Empresa.find(params.empresas_id);
+
+      if (empresaExists.user_id !== userLogado.id && !userLogado.ADM) {
+        return response.status(401).json({ error: 'Não autorizado' });
+      }
+
+      const videoExists = await VideoEmpressa.find(params.id);
+
+      if (!videoExists) return;
+
+      const data = request.only(['link', 'titulo', 'descricao', 'empresas_id']);
+
+      const video = {
+        titulo: data.titulo,
+        link: data.link,
+        descricao: data.descricao,
+        empresa_id: data.empresas_id || params.empresas_id,
+      };
+
+      videoExists.merge(video);
+
+      await videoExists.save();
+
+      return videoExists;
+    } catch (err) {
+      return response.status(500).json({ error: err.message });
+    }
+  }
+
+  async delete({ params, auth, response }) {
+    try {
+      const userLogado = await User.find(auth.user.id);
+      const videoExists = await VideoEmpressa.find(params.id);
+
+      if (!userLogado.ADM || !videoExists) {
+        return response.status(401).json({ error: 'Não autorizado' });
+      }
+
+      await videoExists.delete();
+
+      return;
+    } catch (err) {
+      return response.status(500).json({ error: err.message });
     }
   }
 }

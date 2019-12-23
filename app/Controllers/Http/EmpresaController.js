@@ -4,6 +4,15 @@ const Empresa = use('App/Models/Empresa');
 /** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
 const User = use('App/Models/User');
 
+/** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
+const ImagemEmpressa = use('App/Models/ImagemEmpressa');
+
+/** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
+const VideoEmpressa = use('App/Models/VideoEmpressa');
+
+/** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
+const Servico = use('App/Models/Servico');
+
 /** @typedef {import('@adonisjs/framework/src/Request')} Request */
 /** @typedef {import('@adonisjs/framework/src/Response')} Response */
 /** @typedef {import('@adonisjs/framework/src/View')} View */
@@ -18,11 +27,29 @@ class EmpresaController {
         .with('user')
         .with('imagens')
         .with('videos')
+        .with('servicos')
         .fetch();
 
       return empresa;
     } catch (err) {
       return response.status(500).json({ error: 'Error' });
+    }
+  }
+
+  async show({ params, response }){
+    try {
+      const empresa = await Empresa.find(params.id);
+
+      if (!empresa) return;
+
+      await empresa.load('user');
+      await empresa.load('imagens');
+      await empresa.load('videos');
+      await empresa.load('servicos');
+
+      return empresa;
+    } catch (err) {
+      return response.status(500).json({ error: err.message });
     }
   }
 
@@ -60,6 +87,35 @@ class EmpresaController {
     }
   }
 
+  async update({ request, auth, response, params }){
+    try {
+      const userADM = await User.find(auth.user.id);
+
+      const empresa = await Empresa.find(params.id);
+
+      if (!userADM.ADM || !empresa) {
+        return response.status(401).json({ error: 'Não autorizado' });
+      }
+
+      const data = request.only([
+        'nome',
+        'descricao',
+        'fone_contato',
+        'fone_contato2',
+        'email_contato',
+        'endereco',
+      ]);
+
+      empresa.merge(data);
+
+      await empresa.save();
+
+      return empresa;
+    } catch (err) {
+      return response.status(500).json({ error: err.message });
+    }
+  }
+
   async delete({ params, auth, response }) {
     try {
       const userADM = await User.find(auth.user.id);
@@ -70,11 +126,25 @@ class EmpresaController {
         return response.status(401).json({ error: 'Não autorizado' });
       }
 
+      while(true){
+        const imagem = await ImagemEmpressa.findBy('empresa_id', empresaExists.id);
+
+        const video = await VideoEmpressa.findBy('empresa_id', empresaExists.id);
+
+        const servico = await Servico.findBy('empresa_id', empresaExists.id);
+
+        if (imagem) await imagem.delete();
+        if (video) await video.delete();
+        if (servico) await servico.delete();
+
+        if (!imagem && !video && !servico) break;
+      }
+
       await empresaExists.delete();
 
       return;
     } catch (err) {
-      return response.status(500).json({ error: 'Error' });
+      return response.status(500).json({ error: err.message });
     }
   }
 }

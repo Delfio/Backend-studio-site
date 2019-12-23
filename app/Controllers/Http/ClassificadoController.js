@@ -41,11 +41,11 @@ class ClassificadoController {
   async show({ params }) {
     const classificado = await Classificado.find(params.id);
 
+    if (!classificado) return;
+
     await classificado.load('user');
     await classificado.load('imagens');
     await classificado.load('videos');
-
-    if (!classificado) return;
 
     return classificado;
   }
