@@ -23,3 +23,4 @@ studio.com
     - User
     - Classificados (IMPLEMENTAR FUNCIONALIDADE DE APROVAÇÃO E DESTAQUE)
     - Eventos
+    - Tudo aqui empresas
