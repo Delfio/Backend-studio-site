@@ -47,7 +47,7 @@ class EventoController {
   async index() {
     const eventos = Evento.query()
       .with('user')
-      .with('imagens')
+      .with('imagem')
       .with('videos')
       .fetch();
 

@@ -7,6 +7,10 @@ class Evento extends Model {
     return this.belongsTo('App/Models/User');
   }
 
+  imagem() {
+    return this.hasOne('App/Models/ImagemEvento')
+  }
+
   imagens() {
     // Um evento tem varias fotos
     return this.hasMany('App/Models/ImagemEvento');

@@ -19,9 +19,9 @@ const User = use('App/Models/User');
 class ClassificadoController {
   async index() {
     const classificados = Classificado.query()
-      .with('user')
-      .with('imagens')
-      .with('videos')
+      .select('*')
+      .where('aprovado', '=', true)
+      .with('imagem')
       .fetch();
 
     return classificados;
@@ -44,7 +44,7 @@ class ClassificadoController {
     if (!classificado) return;
 
     await classificado.load('user');
-    await classificado.load('imagens');
+    await classificado.load('imagens'); //retornar todas
     await classificado.load('videos');
 
     return classificado;

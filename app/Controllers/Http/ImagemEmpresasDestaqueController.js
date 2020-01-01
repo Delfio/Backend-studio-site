@@ -2,10 +2,10 @@
 const User = use('App/Models/User');
 
 /** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
-const Empresa = use('App/Models/Empresa');
+const ImagemEmpresasDestaque = use('App/Models/ImagemEmpresasDestaque');
 
 /** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
-const ImagemEmpressa = use('App/Models/ImagemEmpressa');
+const EmpresasEmDestaque = use('App/Models/EmpresasEmDestaque');
 
 /** @typedef {import('@adonisjs/framework/src/Request')} Request */
 /** @typedef {import('@adonisjs/framework/src/Response')} Response */
@@ -14,33 +14,35 @@ const ImagemEmpressa = use('App/Models/ImagemEmpressa');
 const Helpers = use('Helpers');
 
 /**
- * Resourceful controller for interacting with imagemempressas
+ * Resourceful controller for interacting with imagemempresasdestaques
  */
-class ImagemEmpressaController {
+class ImagemEmpresasDestaqueController {
   /**
-   * Show a list of all imagemempressas.
-   * GET imagemempressas
+   * Show a list of all imagemempresasdestaques.
+   * GET imagemempresasdestaques
    *
    * @param {object} ctx
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    * @param {View} ctx.view
    */
-
-  async show({ params, response }) {
-    const file = await ImagemEmpressa.find(params.id);
-
-    if (!file) return;
-
-    return response.download(Helpers.tmpPath(`uploads/empresas/${file.file}`));
+  async index ({ request, response, view }) {
   }
 
+  /**
+   * Create/save a new imagemempresasdestaque.
+   * POST imagemempresasdestaques
+   *
+   * @param {object} ctx
+   * @param {Request} ctx.request
+   * @param {Response} ctx.response
+   */
   async store({ request, auth, params, response }) {
     try {
       /* Verificação */
       const userLogado = await User.find(auth.user.id);
 
-      const empresaExists = await Empresa.find(params.empresas_id);
+      const empresaExists = await EmpresasEmDestaque.find(params.empresaDestaque_id);
 
       if(!empresaExists) return;
 
@@ -48,7 +50,7 @@ class ImagemEmpressaController {
         return response.status(401).json({ error: 'Não autorizado' });
       }
 
-      const upload = request.file('imagem_empresa', {
+      const upload = request.file('imagem_empresa_destaque', {
         size: '2mb',
         extnames: ['png', 'jpeg', 'jpg'],
       });
@@ -58,7 +60,7 @@ class ImagemEmpressaController {
       }
       const fileName = `${Date.now()}.${upload.subtype}`;
 
-      await upload.move(Helpers.tmpPath('uploads/empresas'), {
+      await upload.move(Helpers.tmpPath('uploads/empresasDestaque'), {
         name: fileName,
       });
 
@@ -66,12 +68,12 @@ class ImagemEmpressaController {
         throw upload.error();
       }
 
-      const file = await ImagemEmpressa.create({
+      const file = await ImagemEmpresasDestaque.create({
         file: fileName,
         name: upload.clientName,
         type: upload.type,
         subtype: upload.subtype,
-        empresa_id: params.empresas_id,
+        empresas_em_destaque_id: params.empresaDestaque_id,
       });
 
       return file;
@@ -80,21 +82,46 @@ class ImagemEmpressaController {
     }
   }
 
-  async update({ request, auth, params, response }) {
+  /**
+   * Display a single imagemempresasdestaque.
+   * GET imagemempresasdestaques/:id
+   *
+   * @param {object} ctx
+   * @param {Request} ctx.request
+   * @param {Response} ctx.response
+   * @param {View} ctx.view
+   */
+  async show ({ params, request, response, view }) {
+    const file = await ImagemEmpresasDestaque.find(params.id);
+
+    if (!file) return;
+
+    return response.download(Helpers.tmpPath(`uploads/empresasDestaque/${file.file}`));
+  }
+
+  /**
+   * Update imagemempresasdestaque details.
+   * PUT or PATCH imagemempresasdestaques/:id
+   *
+   * @param {object} ctx
+   * @param {Request} ctx.request
+   * @param {Response} ctx.response
+   */
+  async update ({ params, request, response, auth }) {
     try {
       const userLogado = await User.find(auth.user.id);
 
-      const empresaExists = await Empresa.find(params.empresas_id);
+      const empresaExists = await EmpresasEmDestaque.find(params.empresaDestaque_id);
 
       if (empresaExists.user_id !== userLogado.id && !userLogado.ADM) {
         return response.status(401).json({ error: 'Não autorizado' });
       }
 
-      const imagem = await ImagemEmpressa.find(params.id);
+      const imagem = await ImagemEmpresasDestaque.find(params.id);
 
       if (!imagem) return;
 
-      const upload = request.file('imagem_empresa', {
+      const upload = request.file('imagem_empresa_destaque', {
         size: '2mb',
         extnames: ['png', 'jpeg', 'jpg'],
       });
@@ -104,7 +131,7 @@ class ImagemEmpressaController {
       }
       const fileName = `${Date.now()}.${upload.subtype}`;
 
-      await upload.move(Helpers.tmpPath('uploads/empresas'), {
+      await upload.move(Helpers.tmpPath('uploads/empresasDestaque'), {
         name: fileName,
       });
 
@@ -117,7 +144,6 @@ class ImagemEmpressaController {
         name: upload.clientName,
         type: upload.type,
         subtype: upload.subtype,
-        empresa_id: params.empresas_id,
       };
 
       imagem.merge(data);
@@ -129,11 +155,19 @@ class ImagemEmpressaController {
     }
   }
 
-  async delete({ params, auth, response }) {
+  /**
+   * Delete a imagemempresasdestaque with id.
+   * DELETE imagemempresasdestaques/:id
+   *
+   * @param {object} ctx
+   * @param {Request} ctx.request
+   * @param {Response} ctx.response
+   */
+  async delete ({ params, response, auth }) {
     try {
       const userLogado = await User.find(auth.user.id);
 
-      const imagem = await ImagemEmpressa.find(params.id);
+      const imagem = await ImagemEmpresasDestaque.find(params.id);
 
       if (!userLogado.ADM || !imagem) {
         return response.status(401).json({ error: 'Não autorizado' });
@@ -148,4 +182,4 @@ class ImagemEmpressaController {
   }
 }
 
-module.exports = ImagemEmpressaController;
+module.exports = ImagemEmpresasDestaqueController

@@ -7,6 +7,10 @@ class Classificado extends Model {
     return this.belongsTo('App/Models/User');
   }
 
+  imagem() {
+    return this.hasOne('App/Models/ImageClassificado')
+  }
+
   imagens() {
     // Um classificado tem varias fotos
     return this.hasMany('App/Models/ImageClassificado');

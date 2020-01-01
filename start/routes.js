@@ -8,6 +8,8 @@ Route.put('users/:id', 'UserController.update').middleware('auth'); // Update de
 Route.post('forgot', 'ForgotPasswordController.store'); // Email para recuperaçaõ de senha
 Route.post('reset', 'ResetPasswordController.store'); // Mudar a senha
 
+Route.delete('users', 'UserController.delete').middleware('auth');
+
 /* ##############    CLASSIFICADOS    ############## */
 
 Route.get('imgCadastros/:id', 'ImageClassificadoController.show'); // Ver imagem sem estar logado;
@@ -108,7 +110,7 @@ Route.group(() => {
 
   Route.resource('empresas.video', 'VideoEmpressaController')
     .apiOnly()
-    .except(['index', 'show', 'destoy']);
+    .except(['index', 'show', 'destoy', 'delete']);
   Route.delete('empresas/video/:id', 'VideoEmpressaController.delete');
 
   /*
@@ -123,12 +125,64 @@ Route.get('imgEmpresas/:id', 'ImagemEmpressaController.show');
 
 /* ##############    EMPRESAS    ############## */
 
+
+
+/* ##############    NOTICIAS    ############## */
+
+Route.get('noticias', 'NoticiaController.index');
+Route.get('noticias/:id', 'NoticiaController.show');
+Route.get('imgNoticias/:id', 'ImagemNoticiaController.show')
+
+Route.group(() => {
+  Route.resource('noticias', 'NoticiaController')
+    .apiOnly()
+    .except(['index', 'show', 'destroy', 'delete']);
+
+  Route.delete('noticias/:id', 'NoticiaController.delete');
+
+  Route.resource('noticias.imagem', 'ImagemNoticiaController')
+    .apiOnly()
+    .except(['show', 'delete']);
+}).middleware('auth')
+
+/* ##############    NOTICIAS    ############## */
+
+/* ##############    EMPRESAS DESTAQUES    ############## */
+
+Route.get('empresaDestaque', 'EmpresasEmDestaqueController.index');
+
+Route.get('empresaDestaque/:id', 'EmpresasEmDestaqueController.show');
+
+Route.get('imgEmpresasDestaques/:id', 'ImagemEmpresasDestaqueController.show');
+
+Route.get('/empresaDestaque/:empresaDestaque_id/video', 'VideoEmpresasDestaqueController.show');
+
+Route.group(() => {
+  Route.resource('empresaDestaque', 'EmpresasEmDestaqueController')
+    .apiOnly()
+    .except(['index', 'show', 'destroy']);
+
+  Route.resource('empresaDestaque.imagem', 'ImagemEmpresasDestaqueController')
+    .apiOnly()
+    .except(['index', 'show', 'destroy']);
+
+  Route.resource('empresaDestaque.video', 'VideoEmpresasDestaqueController')
+    .apiOnly()
+    .except(['index', 'show', 'destroy']);
+
+  Route.delete('empresaDestaque/video/:id', 'VideoEmpresasDestaqueController.delete');
+
+  Route.delete('empresaDestaque/imagem/:id', 'ImagemEmpresasDestaqueController.delete');
+
+  Route.delete('empresaDestaque/:id', 'EmpresasEmDestaqueController.delete');
+}).middleware('auth');
+
+/* ##############    EMPRESAS DESTAQUES    ############## */
+
 /* ##############    ADMIM    ############## */
 
 /* Get Users para adms */
 Route.get('users', 'AdministradorController.index').middleware('auth');
-
-Route.delete('users', 'UserController.delete').middleware('auth');
 
 /* cadastro */
 Route.group(() => {

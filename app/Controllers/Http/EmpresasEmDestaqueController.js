@@ -1,51 +1,39 @@
 /** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
-const Empresa = use('App/Models/Empresa');
-
-/** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
 const User = use('App/Models/User');
 
 /** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
-const ImagemEmpressa = use('App/Models/ImagemEmpressa');
+const ImagemEmpresasDestaque = use('App/Models/ImagemEmpresasDestaque');
 
 /** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
-const VideoEmpressa = use('App/Models/VideoEmpressa');
+const EmpresasEmDestaque = use('App/Models/EmpresasEmDestaque');
 
 /** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
-const Servico = use('App/Models/Servico');
+const VideoEmpresasDestaque = use('App/Models/VideoEmpresasDestaque');
 
 /** @typedef {import('@adonisjs/framework/src/Request')} Request */
 /** @typedef {import('@adonisjs/framework/src/Response')} Response */
 /** @typedef {import('@adonisjs/framework/src/View')} View */
 
 /**
- * Resourceful controller for interacting with empresas
+ * Resourceful controller for interacting with empresasemdestaques
  */
-class EmpresaController {
-  async index({ response }) {
+class EmpresasEmDestaqueController {
+  /**
+   * Show a list of all empresasemdestaques.
+   * GET empresasemdestaques
+   *
+   * @param {object} ctx
+   * @param {Request} ctx.request
+   * @param {Response} ctx.response
+   * @param {View} ctx.view
+   */
+  async index ({ request, response, view }) {
     try {
-      const empresa = Empresa.query()
+      const empresa = EmpresasEmDestaque.query()
         .with('user')
         .with('imagem')
         .with('videos')
-        .with('servicos')
         .fetch();
-
-      return empresa;
-    } catch (err) {
-      return response.status(500).json({ error: 'Error' });
-    }
-  }
-
-  async show({ params, response }){
-    try {
-      const empresa = await Empresa.find(params.id);
-
-      if (!empresa) return;
-
-      await empresa.load('user');
-      await empresa.load('imagens');
-      await empresa.load('videos');
-      await empresa.load('servicos');
 
       return empresa;
     } catch (err) {
@@ -53,7 +41,15 @@ class EmpresaController {
     }
   }
 
-  async store({ request, auth, response }) {
+  /**
+   * Create/save a new empresasemdestaque.
+   * POST empresasemdestaques
+   *
+   * @param {object} ctx
+   * @param {Request} ctx.request
+   * @param {Response} ctx.response
+   */
+  async store ({ request, response, auth }) {
     const data = request.only([
       'nome',
       'descricao',
@@ -71,7 +67,7 @@ class EmpresaController {
         return response.status(401).json({ error: 'Não autorizado' });
       }
 
-      const empresa = Empresa.create({
+      const empresa = EmpresasEmDestaque.create({
         nome: data.nome,
         descricao: data.descricao,
         fone_contato: data.fone_contato,
@@ -83,15 +79,48 @@ class EmpresaController {
 
       return empresa;
     } catch (err) {
-      return response.status(500).json({ error: 'Error' });
+      return response.status(500).json({ error: err.message });
     }
   }
 
-  async update({ request, auth, response, params }){
+  /**
+   * Display a single empresasemdestaque.
+   * GET empresasemdestaques/:id
+   *
+   * @param {object} ctx
+   * @param {Request} ctx.request
+   * @param {Response} ctx.response
+   * @param {View} ctx.view
+   */
+  async show ({ params, request, response, view }) {
+    try {
+      const empresa = await EmpresasEmDestaque.find(params.id);
+
+      if (!empresa) return;
+
+      await empresa.load('user');
+      await empresa.load('imagens');
+      await empresa.load('videos');
+
+      return empresa;
+    } catch (err) {
+      return response.status(500).json({ error: err.message });
+    }
+  }
+
+  /**
+   * Update empresasemdestaque details.
+   * PUT or PATCH empresasemdestaques/:id
+   *
+   * @param {object} ctx
+   * @param {Request} ctx.request
+   * @param {Response} ctx.response
+   */
+  async update ({ params, request, response, auth }) {
     try {
       const userADM = await User.find(auth.user.id);
 
-      const empresa = await Empresa.find(params.id);
+      const empresa = await EmpresasEmDestaque.find(params.id);
 
       if (!userADM.ADM || !empresa) {
         return response.status(401).json({ error: 'Não autorizado' });
@@ -116,28 +145,25 @@ class EmpresaController {
     }
   }
 
-  async delete({ params, auth, response }) {
+  async delete ({params, response, auth}) {
     try {
       const userADM = await User.find(auth.user.id);
 
-      const empresaExists = await Empresa.find(params.id);
+      const empresaExists = await EmpresasEmDestaque.find(params.id);
 
       if (!userADM.ADM || !empresaExists) {
         return response.status(401).json({ error: 'Não autorizado' });
       }
 
       while(true){
-        const imagem = await ImagemEmpressa.findBy('empresa_id', empresaExists.id);
+        const imagem = await ImagemEmpresasDestaque.findBy('empresas_em_destaque_id', empresaExists.id);
 
-        const video = await VideoEmpressa.findBy('empresa_id', empresaExists.id);
-
-        const servico = await Servico.findBy('empresa_id', empresaExists.id);
+        const video = await VideoEmpresasDestaque.findBy('empresas_em_destaque_id', empresaExists.id);
 
         if (imagem) await imagem.delete();
         if (video) await video.delete();
-        if (servico) await servico.delete();
 
-        if (!imagem && !video && !servico) break;
+        if (!imagem && !video) break;
       }
 
       await empresaExists.delete();
@@ -147,6 +173,7 @@ class EmpresaController {
       return response.status(500).json({ error: err.message });
     }
   }
+
 }
 
-module.exports = EmpresaController;
+module.exports = EmpresasEmDestaqueController

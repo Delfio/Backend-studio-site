@@ -33,6 +33,10 @@ class User extends Model {
     return this.hasMany('App/Models/Token');
   }
 
+  static get hidden () {
+    return ['password']
+  }
+
   classificados() {
     return this.belongsToMany('App/Models/Classificado').pivotTable(
       'user_classificados'
