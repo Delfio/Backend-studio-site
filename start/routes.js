@@ -179,6 +179,32 @@ Route.group(() => {
 
 /* ##############    EMPRESAS DESTAQUES    ############## */
 
+/* ##############    ANUNCIOS    ############## */
+
+Route.get('anuncio', 'AnuncioController.index');
+
+Route.get('anuncioImage/:id', 'ImagemAnuncioController.show');
+
+Route.group(() =>{
+  Route.resource('anuncio', 'AnuncioController').apiOnly().except(['index', 'show', 'destroy']);
+
+  Route.delete('anuncio/:id', 'AnuncioController.delete');
+
+  Route.resource('anuncio.script', 'ScriptAnuncioController').apiOnly()
+    .except(['index', 'show', 'destroy']);
+
+  Route.resource('anuncio.imagem', 'ImagemAnuncioController').apiOnly()
+    .except(['show', 'index', 'destroy']);
+
+  Route.delete('anuncio/imagem/:id', 'ImagemAnuncioController.delete')
+
+  Route.get('anuncio/script', 'ScriptAnuncioController.index');
+
+  Route.delete('anuncio/script/:id', 'ScriptAnuncioController.delete');
+}).middleware('auth')
+
+/* ##############    ANUNCIOS    ############## */
+
 /* ##############    ADMIM    ############## */
 
 /* Get Users para adms */

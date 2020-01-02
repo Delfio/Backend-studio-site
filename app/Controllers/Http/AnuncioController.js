@@ -1,4 +1,14 @@
-'use strict'
+/** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
+const User = use('App/Models/User');
+
+/** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
+const Anuncio = use('App/Models/Anuncio');
+
+/** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
+const ImagemAnuncio = use('App/Models/ImagemAnuncio');
+
+/** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
+const ScriptAnuncio = use('App/Models/ScriptAnuncio');
 
 /** @typedef {import('@adonisjs/framework/src/Request')} Request */
 /** @typedef {import('@adonisjs/framework/src/Response')} Response */
@@ -18,18 +28,43 @@ class AnuncioController {
    * @param {View} ctx.view
    */
   async index ({ request, response, view }) {
-  }
+    try {
+      const Anuncio1 = await Anuncio
+        .query()
+        .select('*')
+        .with('imagem')
+        .with('script')
+        .where('tipo', '=', '1')
+        .orderBy('id', 'desc')
+        .first();
 
-  /**
-   * Render a form to be used for creating a new anuncio.
-   * GET anuncios/create
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async create ({ request, response, view }) {
+      const Anuncio2 = await Anuncio
+        .query()
+        .select('*')
+        .with('imagem')
+        .with('script')
+        .where('tipo', '=', '2')
+        .orderBy('id', 'asc')
+        .first();
+
+      const Anuncio3 = await Anuncio
+        .query()
+        .select('*')
+        .with('imagem')
+        .with('script')
+        .where('tipo', '=', '3')
+        .orderBy('id', 'asc')
+        .first();
+
+
+      return response.status(200).json({
+        "Anuncio1": Anuncio1,
+        "Anuncio2": Anuncio2,
+        "Anuncio3": Anuncio3,
+      });
+    } catch (err) {
+      return response.status(500).json({ error: err.message });
+    }
   }
 
   /**
@@ -40,53 +75,90 @@ class AnuncioController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async store ({ request, response }) {
+  async store ({ request, response, auth }) {
+    try {
+
+      const userADM = await User.find(auth.user.id);
+
+      if (!userADM.ADM) {
+        return response.status(401).json({ error: 'Não autorizado' });
+      }
+
+      const data = request.only(['titulo', 'empresa', 'tipo'])
+
+      const anuncio = await Anuncio.create({
+        ...data,
+        user_id: auth.user.id
+      })
+
+      return anuncio;
+
+    } catch (err) {
+      return response.status(500).json({ error: err.message });
+    }
   }
 
-  /**
-   * Display a single anuncio.
-   * GET anuncios/:id
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
   async show ({ params, request, response, view }) {
   }
 
-  /**
-   * Render a form to update an existing anuncio.
-   * GET anuncios/:id/edit
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async edit ({ params, request, response, view }) {
+  async update ({ params, request, response, auth }) {
+    try {
+
+      const userADM = await User.find(auth.user.id);
+
+      const anuncioExists = await Anuncio.find(params.id);
+
+      if (!userADM.ADM || !anuncioExists) {
+        return response.status(401).json({ error: 'Não autorizado' });
+      }
+
+      const data = request.only(['titulo', 'empresa', 'tipo']);
+
+      anuncioExists.merge(data);
+
+      await anuncioExists.save();
+
+      return anuncioExists;
+    } catch (err) {
+      return response.status(500).json({ error: err.message });
+    }
+
   }
 
-  /**
-   * Update anuncio details.
-   * PUT or PATCH anuncios/:id
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   */
-  async update ({ params, request, response }) {
-  }
+  async delete ({ params, auth, response }) {
+    try {
 
-  /**
-   * Delete a anuncio with id.
-   * DELETE anuncios/:id
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   */
-  async destroy ({ params, request, response }) {
+      const userADM = await User.find(auth.user.id);
+
+      const anuncioExists = await Anuncio.find(params.id);
+
+      if (!userADM.ADM || !anuncioExists) {
+        return response.status(401).json({ error: 'Não autorizado' });
+      }
+
+
+      while (true) {
+        const imagemAnuncio = await ImagemAnuncio.findBy(
+          'anuncio_id',
+          anuncioExists.id
+        );
+
+        const scriptAnuncio = await ScriptAnuncio.findBy(
+          'anuncio_id',
+          anuncioExists.id
+        );
+
+        if (imagemAnuncio) await imagemAnuncio.delete();
+
+        if (scriptAnuncio) await scriptAnuncio.delete();
+
+        if (!imagemAnuncio && !scriptAnuncio) break;
+      }
+
+      return;
+    } catch (err) {
+      return response.status(500).json({ error: err.message });
+    }
   }
 }
 

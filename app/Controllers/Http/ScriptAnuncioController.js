@@ -1,4 +1,11 @@
-'use strict'
+/** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
+const User = use('App/Models/User');
+
+/** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
+const Anuncio = use('App/Models/Anuncio');
+
+/** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
+const ScriptAnuncio = use('App/Models/ScriptAnuncio');
 
 /** @typedef {import('@adonisjs/framework/src/Request')} Request */
 /** @typedef {import('@adonisjs/framework/src/Response')} Response */
@@ -18,18 +25,15 @@ class ScriptAnuncioController {
    * @param {View} ctx.view
    */
   async index ({ request, response, view }) {
-  }
+    try {
 
-  /**
-   * Render a form to be used for creating a new scriptanuncio.
-   * GET scriptanuncios/create
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async create ({ request, response, view }) {
+      const script = ScriptAnuncio.all();
+
+      return script;
+    } catch (err) {
+      return response.status(500).json({ error: err.message });
+
+    }
   }
 
   /**
@@ -40,32 +44,30 @@ class ScriptAnuncioController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async store ({ request, response }) {
+  async store ({ request, response, auth, params }) {
+    try {
+
+      const userADM = await User.find(auth.user.id);
+
+      const anuncioExists = await Anuncio.find(params.anuncio_id);
+
+      if (!userADM.ADM || !anuncioExists) {
+        return response.status(401).json({ error: 'Não autorizado' });
+      }
+
+      const data = request.only(['script']);
+
+      const script = ScriptAnuncio.create({
+        ...data,
+        anuncio_id: anuncioExists.id,
+      })
+
+      return script;
+    } catch (err) {
+      return response.status(500).json({ error: err.message });
+    }
   }
 
-  /**
-   * Display a single scriptanuncio.
-   * GET scriptanuncios/:id
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async show ({ params, request, response, view }) {
-  }
-
-  /**
-   * Render a form to update an existing scriptanuncio.
-   * GET scriptanuncios/:id/edit
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async edit ({ params, request, response, view }) {
-  }
 
   /**
    * Update scriptanuncio details.
@@ -75,7 +77,30 @@ class ScriptAnuncioController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async update ({ params, request, response }) {
+  async update ({ params, request, response, auth }) {
+    try {
+
+      const userADM = await User.find(auth.user.id);
+
+      const anuncioExists = await Anuncio.find(params.anuncio_id);
+
+      const scriptExists = await ScriptAnuncio.find(params.id);
+
+      if (!userADM.ADM || !anuncioExists || !scriptExists) {
+        return response.status(401).json({ error: 'Não autorizado' });
+      }
+
+      const data = request.all();
+
+      await scriptExists.merge(data);
+
+      await scriptExists.save();
+
+      return scriptExists;
+    } catch (err) {
+      return response.status(500).json({ error: err.message });
+
+    }
   }
 
   /**
@@ -86,7 +111,23 @@ class ScriptAnuncioController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async destroy ({ params, request, response }) {
+  async delete ({ params, request, response, auth }) {
+    try {
+
+      const userADM = await User.find(auth.user.id);
+
+      const scriptExists = await ScriptAnuncio.find(params.id);
+
+      if (!userADM.ADM || !scriptExists) {
+        return response.status(401).json({ error: 'Não autorizado' });
+      }
+
+      await scriptExists.delete();
+
+      return;
+    } catch (err) {
+      return response.status(500).json({ error: err.message });
+    }
   }
 }
 

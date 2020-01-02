@@ -83,7 +83,7 @@ class EmpresaController {
 
       return empresa;
     } catch (err) {
-      return response.status(500).json({ error: 'Error' });
+      return response.status(500).json({ error: err.message });
     }
   }
 

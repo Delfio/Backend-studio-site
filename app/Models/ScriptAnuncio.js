@@ -4,6 +4,7 @@
 const Model = use('Model')
 
 class ScriptAnuncio extends Model {
+
 }
 
 module.exports = ScriptAnuncio
