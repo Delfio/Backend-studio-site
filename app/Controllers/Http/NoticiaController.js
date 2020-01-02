@@ -26,7 +26,7 @@ class NoticiaController {
    * @param {Response} ctx.response
    * @param {View} ctx.view
    */
-  async index ({ request, response, view }) {
+  async index ({ response }) {
     try {
       const noticia1 = await Noticia
         .query()
@@ -158,7 +158,7 @@ class NoticiaController {
    * @param {Response} ctx.response
    * @param {View} ctx.view
    */
-  async show ({ params, request, response, view }) {
+  async show ({ params, response }) {
     try {
       const noticia = await Noticia.find(params.id);
 

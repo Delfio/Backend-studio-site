@@ -205,6 +205,33 @@ Route.group(() =>{
 
 /* ##############    ANUNCIOS    ############## */
 
+
+/* ##############    INFOSPRINCIPAIS    ############## */
+
+Route.get('principal', 'InfosPrincipaiController.index');
+
+Route.get('imgPrincipal/:id', 'ImagemInfosPrincipaiController.show');
+
+Route.get('principal/:id', 'InfosPrincipaiController.show');
+
+Route.group(() => {
+  Route.resource('principal', 'InfosPrincipaiController')
+    .apiOnly()
+    .except(['index', 'show', 'destroy']);
+
+  Route.resource('principal.imagem', 'ImagemInfosPrincipaiController')
+    .apiOnly()
+    .except(['index', 'show', 'destroy']);
+
+  Route.resource('principal.video', 'VideosInfosPrincipaiController')
+    .apiOnly()
+    .except(['index', 'show', 'destroy']);
+
+}).middleware('auth')
+
+/* ##############    INFOSPRINCIPAIS    ############## */
+
+
 /* ##############    ADMIM    ############## */
 
 /* Get Users para adms */
