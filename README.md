@@ -1,26 +1,21 @@
-# todo
+# Studio.com - backend
 
-studio.com
-     - Classificados Grátis
-         - Usuário vai poder cadastrar produtos
-         - Fotos do produto, preço status e tudo mais
-         - Sistema de pagar para ter destaque ****
+ **** Esta é uma aplicação de várias funcionalidades, o grande diferencial é o atrativo para empresas locais.
 
-     - Tudo aqui empresas
-         - Perfil de empresas - porém elas não se cadastram
-         - Administrador vai fazer os lançamentos de perfis
-         - Fotos, descrições e até vídeos
+## Funcionalidades
 
-     - Festas e Eventos
-         - Administrador vai cadastrar os eventos e ultimas festas, recentes
-         
-     - Noticias e Colunas
-          - Administrador pode fazer Cadastro de noticias,
-          - Algumas imagens
-          - Descrição
+**Classificados Grátis**, **Anuncios diversos**, **Guia Empresárial**, **Empresas em Destaque**, **Eventos Locais** e **Noticias diversas**.
 
-# OK --
-    - User
-    - Classificados (IMPLEMENTAR FUNCIONALIDADE DE APROVAÇÃO E DESTAQUE)
-    - Eventos
-    - Tudo aqui empresas
+```
+  Está é uma aplicação Rest que pode ser consumida por qualquer tipo de frontend
+```
+
+### Inspirações
+
+* [Globo.com](https://globo.com.br)
+* [Olx.com](https://olx.com.br)
+* [Sympla.com](https://www.sympla.com.br/eventos/porto-velho-ro)
+
+
+### Agradecimentos
+*Obrigado kk*

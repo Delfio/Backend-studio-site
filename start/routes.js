@@ -234,12 +234,9 @@ Route.group(() => {
 
 /* ##############    ADMIM    ############## */
 
-/* Get Users para adms */
-Route.get('users', 'AdministradorController.index').middleware('auth');
-
-/* cadastro */
 Route.group(() => {
   Route.post('admin', 'AdministradorController.store');
+  Route.get('users', 'AdministradorController.index')
   Route.get('admin/classificados', 'AdministradorController.class');
   Route.put('admin/classificado/:id', 'AdministradorController.autorizarClass');
   Route.get('admin/anuncios', 'AdministradorController.anuncios');
