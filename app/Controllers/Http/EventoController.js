@@ -48,7 +48,6 @@ class EventoController {
     const eventos = Evento.query()
       .with('user')
       .with('imagem')
-      .with('videos')
       .fetch();
 
     return eventos;

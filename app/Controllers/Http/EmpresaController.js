@@ -23,16 +23,26 @@ const Servico = use('App/Models/Servico');
 class EmpresaController {
   async index({ response }) {
     try {
-      const empresa = Empresa.query()
-        .with('user')
+      const empresaDestaque = await Empresa.query()
+        .select('*')
+        .where('destaque', '=', true)
+        .with('imagens')
+        .orderBy('id', 'desc')
+        .first();
+
+      const empresasNormais = await Empresa.query()
+        .select('*')
+        .where('destaque', '=', false)
         .with('imagem')
-        .with('videos')
-        .with('servicos')
+        .orderBy('id', 'desc')
         .fetch();
 
-      return empresa;
+      return response.status(200).json({
+        "EmpresaDestaque": empresaDestaque,
+        "EmpresasNormais": empresasNormais,
+      });
     } catch (err) {
-      return response.status(500).json({ error: 'Error' });
+      return response.status(500).json({ error: err.message });
     }
   }
 

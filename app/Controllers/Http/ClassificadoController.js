@@ -18,6 +18,7 @@ const User = use('App/Models/User');
  */
 class ClassificadoController {
   async index() {
+
     const classificados = Classificado.query()
       .select('*')
       .where('aprovado', '=', true)

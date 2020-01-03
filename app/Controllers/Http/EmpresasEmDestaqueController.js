@@ -29,10 +29,11 @@ class EmpresasEmDestaqueController {
    */
   async index ({ request, response, view }) {
     try {
+
+
       const empresa = EmpresasEmDestaque.query()
         .with('user')
         .with('imagem')
-        .with('videos')
         .fetch();
 
       return empresa;

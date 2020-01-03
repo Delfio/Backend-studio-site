@@ -240,6 +240,12 @@ Route.get('users', 'AdministradorController.index').middleware('auth');
 /* cadastro */
 Route.group(() => {
   Route.post('admin', 'AdministradorController.store');
+  Route.get('admin/classificados', 'AdministradorController.class');
+  Route.put('admin/classificado/:id', 'AdministradorController.autorizarClass');
+  Route.get('admin/anuncios', 'AdministradorController.anuncios');
+  Route.get('admin/infos', 'AdministradorController.principal');
+  Route.get('admin/noticias', 'AdministradorController.noticias');
+  Route.get('admin/empresas', 'AdministradorController.empresas');
 }).middleware(['auth']);
 
 /* ##############    ADMIM    ############## */
