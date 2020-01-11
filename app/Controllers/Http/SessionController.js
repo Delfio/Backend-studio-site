@@ -1,11 +1,19 @@
+/** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
+const User = use('App/Models/User');
+
 class SessionController {
   async store({ request, auth }) {
-    const { email, password } = request.all();
+    const { email, senha } = request.all();
 
     // gerar token ao logar
-    const token = await auth.attempt(email, password);
+    const {token} = await auth.attempt(email, senha);
 
-    return { token };
+     const user = await User.findByOrFail('email', email);
+
+    return {
+      user: user,
+      token: token,
+    };
   }
 }
 

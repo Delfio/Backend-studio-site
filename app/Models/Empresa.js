@@ -16,6 +16,10 @@ class Empresa extends Model {
     return this.hasOne('App/Models/ImagemEmpressa')
   }
 
+  logo() {
+    return this.hasOne('App/Models/LogoEmpresa')
+  }
+
   videos() {
     // Uma empresa tem vários vídeos
     return this.hasMany('App/Models/VideoEmpressa');

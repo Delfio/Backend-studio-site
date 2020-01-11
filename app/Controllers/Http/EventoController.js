@@ -144,6 +144,23 @@ class EventoController {
       return response.status(err.status).json({ error: err.message });
     }
   }
+
+  async ultimo() {
+    try {
+
+      const eventos = Evento
+        .query()
+        .select('*')
+        .with('imagem')
+        .orderBy('id', 'desc')
+        .limit(4)
+        .fetch();
+
+      return eventos;
+    } catch (err) {
+      return response.status(err.status).json({ error: err.message });
+    }
+  }
 }
 
 module.exports = EventoController;

@@ -60,6 +60,8 @@ Route.get('eventos', 'EventoController.index');
 Route.get('eventos/:id', 'EventoController.show');
 Route.get('imgEvento/:id', 'ImagemEventoController.show'); // Ver imagem sem estar logado;
 
+Route.get('ultimos/eventos', 'EventoController.ultimo') //retornar os 4 ultimos eventos;
+
 Route.group(() => {
   Route.post('eventos', 'EventoController.store');
   Route.put('eventos/:id', 'EventoController.update');
@@ -108,6 +110,10 @@ Route.group(() => {
     .except(['index', 'show', 'destroy']);
   Route.delete('empresas/imagem/:id', 'ImagemEmpressaController.delete');
 
+  Route.resource('empresas.logo', 'LogoEmpresaController')
+    .apiOnly()
+    .except(['index', 'show', 'destroy']);
+
   Route.resource('empresas.video', 'VideoEmpressaController')
     .apiOnly()
     .except(['index', 'show', 'destoy', 'delete']);
@@ -122,6 +128,8 @@ Route.group(() => {
 }).middleware('auth');
 
 Route.get('imgEmpresas/:id', 'ImagemEmpressaController.show');
+
+Route.get('imgLogoEmpresa/:id', 'LogoEmpresaController.show');
 
 /* ##############    EMPRESAS    ############## */
 

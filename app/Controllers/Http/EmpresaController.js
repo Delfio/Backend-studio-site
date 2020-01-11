@@ -26,14 +26,15 @@ class EmpresaController {
       const empresaDestaque = await Empresa.query()
         .select('*')
         .where('destaque', '=', true)
-        .with('imagens')
+        .with('imagem')
+        .with('logo')
         .orderBy('id', 'desc')
         .first();
 
       const empresasNormais = await Empresa.query()
         .select('*')
         .where('destaque', '=', false)
-        .with('imagem')
+        .with('logo')
         .orderBy('id', 'desc')
         .fetch();
 

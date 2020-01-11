@@ -96,16 +96,16 @@ class NoticiaController {
         .fetch();
 
 
-      return response.status(200).json({
-        "Noticia 1": noticia1,
-        "Noticia 2": noticia2,
-        "Noticia 3": noticia3,
-        "Noticia 4": noticia4,
-        "Noticia 5": noticia5,
-        "Noticia 6": noticia6,
-        "Noticia 7": noticia7,
-        "Noticia 8": noticia8,
-      })
+      return response.status(200).json([{
+        "Noticia1": noticia1,
+        "Noticia2": noticia2,
+        "Noticia3": noticia3,
+        "Noticia4": noticia4,
+        "Noticia5": noticia5,
+        "Noticia6": noticia6,
+        "Noticia7": noticia7,
+        "Noticia8": noticia8,
+      }])
     } catch (err) {
       return response.status(500).json({ error: err.message });
     }

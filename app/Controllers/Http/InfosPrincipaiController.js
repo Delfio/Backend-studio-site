@@ -49,11 +49,11 @@ class InfosPrincipaiController {
         .orderBy('id', 'desc')
         .first();
 
-      return response.status(200).json({
+      return response.status(200).json([{
         "Info1": Info1,
         "Info2": Info2,
         "Info3": Info3,
-      })
+      }])
     } catch (err) {
       return response.status(500).json({ error: err.message });
     }
