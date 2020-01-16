@@ -73,7 +73,15 @@ class AdministradorController {
       const userNotAdm = await User.find(auth.user.id);
 
       if (!userNotAdm.ADM) {
-        return response.status(401).json({ error: 'Você não esta autorizado' });
+        const classificado = await Classificado
+          .query()
+          .select('*')
+          .where('user_id', '=', userNotAdm.id)
+          .with('imagens')
+          .with('videos')
+          .fetch();
+
+        return classificado
       }
 
       const classificado = await Classificado

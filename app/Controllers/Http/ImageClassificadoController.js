@@ -18,6 +18,7 @@ const Helpers = use('Helpers');
  */
 class ImageClassificadoController {
   async store({ request, response, params, auth }) {
+    console.log('chegou')
     try {
       /* Verificando se existe esse classificado */
       const classificadoExists = await Classificado.find(
@@ -40,6 +41,8 @@ class ImageClassificadoController {
         size: '2mb',
         extnames: ['png', 'jpeg', 'jpg'],
       });
+
+      console.log(upload);
 
       const fileName = `${Date.now()}.${upload.subtype}`;
 
@@ -78,10 +81,13 @@ class ImageClassificadoController {
   }
 
   async update({ params, response, auth, request }) {
+    console.log('chegou')
     const upload = request.file('imagens_cadastro', {
       size: '2mb',
       extnames: ['png', 'jpeg', 'jpg'],
     });
+
+    console.log(upload);
 
     try {
       const classificadoExists = await Classificado.find(

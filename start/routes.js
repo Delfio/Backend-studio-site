@@ -23,6 +23,8 @@ Route.group(() => {
   Route.post('classificados', 'ClassificadoController.store'); // Cadastrar classificado
   Route.put('classificados/:id', 'ClassificadoController.update'); // Atualizar classificados
   Route.delete('classificados/:id', 'ClassificadoController.delete'); // Show classificados
+
+  Route.get('meusClassificaos', 'ClassificadoController.myClassificado')
 }).middleware('auth');
 
 /* Imagem dos classificados */

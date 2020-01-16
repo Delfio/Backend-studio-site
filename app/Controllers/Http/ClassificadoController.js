@@ -21,7 +21,6 @@ class ClassificadoController {
 
     const classificados = Classificado.query()
       .select('*')
-      .where('aprovado', '=', true)
       .with('imagem')
       .fetch();
 
@@ -112,6 +111,19 @@ class ClassificadoController {
         .status(err.status)
         .json({ error: 'não foi possivel completar sua operação' });
     }
+  }
+
+  async myClassificado({auth}){
+
+    const userLogado = await User.find(auth.user.id);
+
+    const classificados = Classificado.query()
+      .select('*')
+      .where('user_id', '=', `${userLogado.id}`)
+      .with('imagem')
+      .fetch();
+
+    return classificados;
   }
 }
 
