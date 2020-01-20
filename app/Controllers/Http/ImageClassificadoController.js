@@ -38,11 +38,9 @@ class ImageClassificadoController {
       if (!request.file('imagens_cadastro')) return;
 
       const upload = request.file('imagens_cadastro', {
-        size: '2mb',
+        size: '5mb',
         extnames: ['png', 'jpeg', 'jpg'],
       });
-
-      console.log(upload);
 
       const fileName = `${Date.now()}.${upload.subtype}`;
 
@@ -51,6 +49,7 @@ class ImageClassificadoController {
       });
 
       if (!upload.moved()) {
+        console.log(upload);
         throw upload.error();
       }
 
@@ -81,13 +80,11 @@ class ImageClassificadoController {
   }
 
   async update({ params, response, auth, request }) {
-    console.log('chegou')
     const upload = request.file('imagens_cadastro', {
       size: '2mb',
       extnames: ['png', 'jpeg', 'jpg'],
     });
 
-    console.log(upload);
 
     try {
       const classificadoExists = await Classificado.find(

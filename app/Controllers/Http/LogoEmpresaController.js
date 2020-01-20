@@ -97,7 +97,55 @@ class LogoEmpresaController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async update ({ params, request, response }) {
+  async update ({ params, request, response, auth }) {
+
+    try {
+      const userLogado = await User.find(auth.user.id);
+
+      const empresaExists = await Empresa.find(params.empresas_id);
+
+      if (empresaExists.user_id !== userLogado.id && !userLogado.ADM) {
+        return response.status(401).json({ error: 'Não autorizado' });
+      }
+
+      const logoExists = await LogoEmpresa.find(params.id);
+
+      if (!logoExists) return;
+
+      const upload = request.file('logo_empresa', {
+        size: '5mb',
+        extnames: ['png', 'jpeg', 'jpg'],
+      });
+
+      if (!upload) {
+        return response.status(404).json({ error: 'Error' });
+      }
+      const fileName = `${Date.now()}.${upload.subtype}`;
+
+      await upload.move(Helpers.tmpPath('uploads/logoEmpresas'), {
+        name: fileName,
+      });
+
+      if (!upload.moved()) {
+        throw upload.error();
+      }
+
+      const data = {
+        file: fileName,
+        name: upload.clientName,
+        type: upload.type,
+        subtype: upload.subtype,
+        empresa_id: params.empresas_id,
+      };
+
+      logoExists.merge(data);
+      await logoExists.save();
+
+      return logoExists;
+    } catch (err) {
+      return response.status(500).json({ error: err.message });
+    }
+
   }
 
   /**

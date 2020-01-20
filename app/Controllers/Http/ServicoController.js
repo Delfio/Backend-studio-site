@@ -73,7 +73,7 @@ class ServicoController {
 
       return servicoExists;
     }catch(err){
-      
+
     }
   }
 
@@ -93,6 +93,11 @@ class ServicoController {
     }catch(err){
       return response.status(500).json({error: err.message});
     }
+  }
+
+  async allServicos({params}){
+    console.log('teste')
+
   }
 }
 

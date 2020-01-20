@@ -30,14 +30,14 @@ class NoticiaController {
     try {
       const noticia1 = await Noticia
         .query()
-        .select(['id' ,'titulo'])
+        .select(['id' ,'titulo', 'created_at'])
         .where('tipo', '=', '1')
         .orderBy('id', 'desc')
         .first();
 
       const noticia2 = await Noticia
         .query()
-        .select(['id' ,'titulo', 'brev_descricao'])
+        .select(['id' ,'titulo', 'brev_descricao', 'created_at'])
         .where('tipo', '=', '2')
         .with('imagem')
         .orderBy('id', 'desc')
@@ -46,7 +46,7 @@ class NoticiaController {
 
       const noticia3 = await Noticia
         .query()
-        .select(['id' ,'titulo'])
+        .select(['id' ,'titulo', 'created_at'])
         .where('tipo', '=', '3')
         .orderBy('id', 'desc')
         .limit(2)
@@ -54,7 +54,7 @@ class NoticiaController {
 
       const noticia4 = await Noticia
         .query()
-        .select(['id' ,'titulo'])
+        .select(['id' ,'titulo', 'created_at'])
         .where('tipo', '=', '4')
         .orderBy('id', 'desc')
         .limit(3)
@@ -62,7 +62,7 @@ class NoticiaController {
 
       const noticia5 = await Noticia
         .query()
-        .select(['id' ,'titulo'])
+        .select(['id' ,'titulo', 'created_at'])
         .where('tipo', '=', '5')
         .with('imagem')
         .orderBy('id', 'desc')
@@ -71,7 +71,7 @@ class NoticiaController {
 
       const noticia6 = await Noticia
         .query()
-        .select(['id' ,'titulo'])
+        .select(['id' ,'titulo', 'created_at'])
         .where('tipo', '=', '6')
         .with('imagem')
         .orderBy('id', 'desc')
@@ -80,7 +80,7 @@ class NoticiaController {
 
       const noticia7 = await Noticia
         .query()
-        .select(['id' ,'titulo'])
+        .select(['id' ,'titulo', 'created_at'])
         .where('tipo', '=', '7')
         .orderBy('id', 'desc')
         .limit(12)
@@ -88,7 +88,7 @@ class NoticiaController {
 
       const noticia8 = await Noticia
         .query()
-        .select(['id' ,'titulo'])
+        .select(['id' ,'titulo', 'created_at'])
         .where('tipo', '=', '8')
         .with('imagem')
         .orderBy('id', 'desc')
@@ -139,7 +139,7 @@ class NoticiaController {
         titulo: data.titulo,
         brev_descricao: data.brev_descricao,
         descricao: data.descricao,
-        tipo: data.tipo,
+        tipo: data.tipo || 8,
         user_id: auth.user.id,
       });
 
@@ -178,6 +178,8 @@ class NoticiaController {
       const userADM = await User.find(auth.user.id);
 
       const noticia = await Noticia.find(params.id);
+
+      console.log(noticia);
 
       if (!userADM.ADM || !noticia) {
         return response.status(401).json({ error: 'Não autorizado' });

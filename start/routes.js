@@ -105,11 +105,13 @@ Route.group(() => {
   Route.resource('empresas.servico', 'ServicoController')
     .apiOnly()
     .except(['destroy', 'show']);
+  Route.get('/empresas/:id/servico', 'ServicoController.allServicos');
   Route.delete('empresas/servico/:id', 'ServicoController.delete');
 
   Route.resource('empresas.imagem', 'ImagemEmpressaController')
     .apiOnly()
     .except(['index', 'show', 'destroy']);
+
   Route.delete('empresas/imagem/:id', 'ImagemEmpressaController.delete');
 
   Route.resource('empresas.logo', 'LogoEmpresaController')
@@ -152,7 +154,9 @@ Route.group(() => {
 
   Route.resource('noticias.imagem', 'ImagemNoticiaController')
     .apiOnly()
-    .except(['show', 'delete']);
+    .except(['show', 'destroy']);
+
+  Route.delete('/noticias/:noticias_id/imagem/:id', 'ImagemNoticiaController.delete')
 }).middleware('auth')
 
 /* ##############    NOTICIAS    ############## */
@@ -248,7 +252,8 @@ Route.group(() => {
   Route.post('admin', 'AdministradorController.store');
   Route.get('users', 'AdministradorController.index')
   Route.get('admin/classificados', 'AdministradorController.class');
-  Route.put('admin/classificado/:id', 'AdministradorController.autorizarClass');
+  Route.put('admin/classificado/aprovar/:id', 'AdministradorController.autorizarClass');
+  Route.put('admin/classificado/reprovar/:id', 'AdministradorController.reprovarClass');
   Route.get('admin/anuncios', 'AdministradorController.anuncios');
   Route.get('admin/infos', 'AdministradorController.principal');
   Route.get('admin/noticias', 'AdministradorController.noticias');

@@ -89,6 +89,7 @@ class AdministradorController {
         .select('*')
         .with('imagens')
         .with('videos')
+        .with('user')
         .fetch();
 
       return classificado;
@@ -111,6 +112,33 @@ class AdministradorController {
 
       const aprovado = {
         aprovado: 1,
+      }
+      await classificadoExists.merge(aprovado),
+
+      await classificadoExists.save();
+
+      return classificadoExists;
+    } catch (err) {
+      return response.status(500).json({ error: err.message });
+    }
+  }
+
+  async reprovarClass({ auth, response, params }) {
+    try {
+      const userNotAdm = await User.find(auth.user.id);
+
+      if (!userNotAdm.ADM) {
+        return response.status(401).json({ error: 'Você não esta autorizado' });
+      }
+
+      const classificadoExists = await Classificado.find(params.id);
+
+      if(!classificadoExists || !classificadoExists.aprovado) {
+        return response.status(400).json({ error: 'Não foi possivel' })
+      }
+
+      const aprovado = {
+        aprovado: 0,
       }
       await classificadoExists.merge(aprovado),
 

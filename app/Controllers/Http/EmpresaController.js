@@ -53,12 +53,20 @@ class EmpresaController {
 
       if (!empresa) return;
 
-      await empresa.load('user');
-      await empresa.load('imagens');
-      await empresa.load('videos');
-      await empresa.load('servicos');
+      const Empresas = await Empresa.query()
+        .select('*')
+        .where('id', '=', empresa.id)
+        .with('logo')
+        .with('user')
+        .with('imagens')
+        .with('videos')
+        .with('servicos')
+        .orderBy('id', 'desc')
+        .fetch();
 
-      return empresa;
+      return response.status(200).json({
+        Empresas
+      });
     } catch (err) {
       return response.status(500).json({ error: err.message });
     }
@@ -72,6 +80,7 @@ class EmpresaController {
       'fone_contato2',
       'email_contato',
       'endereco',
+      'destaque',
       'user_id',
     ]);
 
@@ -89,6 +98,7 @@ class EmpresaController {
         fone_contato2: data.fone_contato2,
         email_contato: data.email_contato,
         endereco: data.endereco,
+        destaque: data.destaque,
         user_id: data.user_id || auth.user.id,
       });
 
@@ -115,6 +125,7 @@ class EmpresaController {
         'fone_contato2',
         'email_contato',
         'endereco',
+        'destaque',
       ]);
 
       empresa.merge(data);

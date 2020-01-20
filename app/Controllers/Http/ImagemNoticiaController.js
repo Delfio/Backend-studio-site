@@ -105,7 +105,76 @@ class ImagemNoticiaController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async update ({ params, request, response }) {
+
+  async update({ params, response, auth, request }) {
+    const upload = request.file('imagem_noticia', {
+      size: '5mb',
+      extnames: ['png', 'jpeg', 'jpg'],
+    });
+
+    try {
+      const noticiaExists = await Noticia.find(
+        params.noticias_id
+      );
+
+      const imagemExists = await ImagemNoticia.find(params.id);
+
+      const userLogado = await User.find(auth.user.id);
+
+      if (!noticiaExists || !imagemExists) {
+        return response.status(404).json({ Error: 'NotFound' });
+      }
+
+      if (auth.user.id !== noticiaExists.user_id && !userLogado.ADM) {
+        return response.status(401).json({ Error: 'Não autorizad' });
+      }
+
+      const fileName = `${Date.now()}.${upload.subtype}`;
+
+      await upload.move(Helpers.tmpPath('uploads/noticias'), {
+        name: fileName,
+      });
+
+      if (!upload.moved()) {
+        throw upload.error();
+      }
+
+      const data = {
+        file: fileName,
+        name: upload.clientName,
+        type: upload.type,
+        subtype: upload.subtype,
+      };
+
+      imagemExists.merge(data);
+
+      await imagemExists.save();
+
+      return imagemExists;
+    } catch (err) {
+      return response.status(500).json({ Error: 'Error' });
+    }
+  }
+
+  async delete({ response, params, auth }) {
+    try {
+      const userLogado = await User.find(auth.user.id);
+
+      const noticia = await Noticia.find(params.noticias_id);
+
+      if (noticia.user_id !== auth.user.id && !userLogado.ADM) {
+        return response.status(401).error({ Error: 'Não autorizado' });
+      }
+
+      const imagem = await ImagemNoticia.find(params.id);
+
+      if (!imagem) return response.status(400).json({ error: 'Not Found' });
+
+      await imagem.delete();
+      return;
+    } catch (err) {
+      return response.status(err.status).json({ error: err.message });
+    }
   }
 
 }
