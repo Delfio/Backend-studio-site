@@ -1,6 +1,6 @@
 # Studio.com - backend
 
- **** Esta é uma aplicação de várias funcionalidades, o grande diferencial é o atrativo para empresas locais.
+ **Esta é uma aplicação de várias funcionalidades, o grande diferencial é o atrativo para empresas locais.**
 
 ## Funcionalidades
 
